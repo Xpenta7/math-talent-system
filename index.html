@@ -1,141 +1,41 @@
-<!-- เพิ่ม CSS สำหรับ VDO Train -->
-<style>
-    /* VDO Training Styles */
-    .video-category-tabs {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 20px;
-    }
-    .video-category-tab {
-        padding: 8px 16px;
-        border-radius: 8px;
-        font-size: 12px;
-        font-weight: 600;
-        background: #f1f5f9;
-        color: #64748b;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-    .video-category-tab.active {
-        background: #4f46e5;
-        color: white;
-    }
-    .video-item {
-        background: white;
-        border-radius: 12px;
-        border: 1px solid #e2e8f0;
-        overflow: hidden;
-        transition: all 0.3s;
-    }
-    .video-item:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    }
-    .video-quiz-section {
-        background: #f8fafc;
-        border-top: 1px solid #e2e8f0;
-        padding: 20px;
-    }
-    .quiz-question {
-        margin-bottom: 15px;
-    }
-    .quiz-option {
-        padding: 10px;
-        background: white;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        margin-bottom: 8px;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-    .quiz-option:hover {
-        background: #f1f5f9;
-    }
-    .quiz-option.selected {
-        background: #dbeafe;
-        border-color: #3b82f6;
-    }
-    .quiz-option.correct {
-        background: #d1fae5;
-        border-color: #10b981;
-    }
-    .quiz-option.wrong {
-        background: #fee2e2;
-        border-color: #ef4444;
-    }
-    .quiz-score {
-        padding: 15px;
-        background: linear-gradient(135deg, #4f46e5, #7c3aed);
-        color: white;
-        border-radius: 12px;
-        text-align: center;
-    }
-</style>
-
-<!-- ในส่วนของ Branch Teacher View (branch-teacher-view) -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <!-- ปุ่มเดิม... -->
-    <button onclick="showVdoTraining()" class="p-4 bg-white rounded-2xl shadow-sm border border-slate-100 text-center hover:bg-slate-50 transition">
-        <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-            <i data-lucide="video" class="w-6 h-6 text-red-600"></i>
-        </div>
-        <p class="font-medium text-slate-800">VDO Training</p>
-    </button>
-    <!-- ปุ่มอื่นๆ... -->
-</div>
-
-<!-- เพิ่ม VDO Training Modal ใหม่ -->
-<div id="vdo-training-modal" class="fixed inset-0 bg-black/50 z-[100] hide flex items-center justify-center p-4 backdrop-blur-sm">
-    <div class="bg-white rounded-2xl w-full max-w-4xl shadow-2xl p-6 modal-slide-up" style="max-height: 90vh; overflow-y: auto;">
-        <div class="flex justify-between items-center mb-6">
-            <h3 class="font-bold text-xl">VDO Training สำหรับครู</h3>
-            <button onclick="closeVdoTraining()" class="p-2 hover:bg-slate-100 rounded-lg">
-                <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
-        </div>
-        
-        <!-- Category Tabs -->
-        <div class="video-category-tabs mb-6">
-            <button onclick="switchVideoCategory('math')" class="video-category-tab active" id="tab-math">คณิตศาสตร์</button>
-            <button onclick="switchVideoCategory('science')" class="video-category-tab" id="tab-science">วิทยาศาสตร์</button>
-        </div>
-        
-        <!-- Video List -->
-        <div id="video-list-container">
-            <!-- Videos will be loaded here by JavaScript -->
-        </div>
-        
-        <!-- Quiz Section (hidden by default) -->
-        <div id="quiz-section" class="hide mt-8">
-            <div class="bg-white rounded-2xl border border-slate-200 p-6">
-                <h4 class="font-bold text-lg text-slate-800 mb-4" id="quiz-title">แบบทดสอบหลังเรียน</h4>
-                <div id="quiz-questions-container">
-                    <!-- Quiz questions will be loaded here -->
-                </div>
-                <div class="flex justify-between items-center mt-6">
-                    <button onclick="backToVideoList()" class="px-4 py-2 text-slate-600 hover:text-slate-800">
-                        <i data-lucide="arrow-left" class="w-4 h-4 inline mr-2"></i> กลับไปเลือกวิดีโอ
-                    </button>
-                    <button onclick="submitQuiz()" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                        ส่งคำตอบและตรวจสอบ
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Quiz Result -->
-        <div id="quiz-result" class="hide mt-8">
-            <div class="quiz-score">
-                <h4 class="font-bold text-xl mb-2" id="result-title">คะแนนแบบทดสอบ</h4>
-                <div class="text-5xl font-bold mb-4" id="score-display">0/0</div>
-                <p class="mb-4" id="result-message"></p>
-                <button onclick="retakeQuiz()" class="px-6 py-2 bg-white text-indigo-600 rounded-lg font-bold hover:bg-slate-100 mr-2">
-                    ทำแบบทดสอบอีกครั้ง
-                </button>
-                <button onclick="closeVdoTraining()" class="px-6 py-2 bg-white/20 text-white rounded-lg font-bold hover:bg-white/30">
-                    ปิด
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Talent System - Interactive Mockup V7</title>
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body class="bg-slate-50 text-slate-800 h-screen overflow-hidden flex">
+    
+    <!-- Sidebar, Mobile Menu, Main Content จะโหลดจาก JavaScript -->
+    <div id="app-container"></div>
+    
+    <!-- Login Overlay -->
+    <div id="login-overlay-container"></div>
+    
+    <!-- External JavaScript -->
+    <script src="js/utils.js"></script>
+    <script src="js/modals.js"></script>
+    <script src="js/vdo-training.js"></script>
+    <script src="js/main.js"></script>
+    
+    <!-- Initialize -->
+    <script>
+        lucide.createIcons();
+        // Initialize application
+        if (typeof initApp === 'function') {
+            initApp();
+        }
+    </script>
+</body>
+</html>
