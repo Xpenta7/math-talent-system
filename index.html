@@ -374,24 +374,24 @@
 
             <div class="flex items-center gap-4">
                 <!-- HQ Role Tabs (แสดงเมื่ออยู่ในโหมด HQ) -->
-                <div id="hq-role-tabs" class="hidden md:flex items-center gap-1 bg-slate-100 rounded-xl p-1">
-                    <button onclick="switchHqRole('super-admin')" class="hq-role-tab active" id="tab-hq-super-admin">Super Admin</button>
-                    <button onclick="switchHqRole('master-teacher')" class="hq-role-tab" id="tab-hq-master-teacher">Master Teacher</button>
-                    <button onclick="switchHqRole('hr')" class="hq-role-tab" id="tab-hq-hr">HR</button>
-                    <button onclick="switchHqRole('accounting')" class="hq-role-tab" id="tab-hq-accounting">บัญชี</button>
+                <div id="hq-role-tabs" class="hidden flex items-center gap-1 bg-slate-100 rounded-lg p-1 overflow-x-auto">
+                    <button onclick="switchHqRole('super-admin')" class="hq-role-tab active whitespace-nowrap text-xs md:text-sm" id="tab-hq-super-admin">Super Admin</button>
+                    <button onclick="switchHqRole('master-teacher')" class="hq-role-tab whitespace-nowrap text-xs md:text-sm" id="tab-hq-master-teacher">Master Teacher</button>
+                    <button onclick="switchHqRole('hr')" class="hq-role-tab whitespace-nowrap text-xs md:text-sm" id="tab-hq-hr">HR</button>
+                    <button onclick="switchHqRole('accounting')" class="hq-role-tab whitespace-nowrap text-xs md:text-sm" id="tab-hq-accounting">บัญชี</button>
                 </div>
 
                 <!-- Branch Role Tabs (แสดงเมื่ออยู่ในโหมด Branch) -->
-                <div id="branch-role-tabs" class="hidden md:flex items-center gap-1 bg-slate-100 rounded-xl p-1">
-                    <button onclick="switchBranchRole('executive')" class="branch-role-tab active" id="tab-branch-executive">Executive</button>
-                    <button onclick="switchBranchRole('admin')" class="branch-role-tab" id="tab-branch-admin">Admin</button>
-                    <button onclick="switchBranchRole('teacher')" class="branch-role-tab" id="tab-branch-teacher">Teacher</button>
+                <div id="branch-role-tabs" class="hidden flex items-center gap-1 bg-slate-100 rounded-lg p-1 overflow-x-auto">
+                    <button onclick="switchBranchRole('executive')" class="branch-role-tab active whitespace-nowrap text-xs md:text-sm" id="tab-branch-executive">Executive</button>
+                    <button onclick="switchBranchRole('admin')" class="branch-role-tab whitespace-nowrap text-xs md:text-sm" id="tab-branch-admin">Admin</button>
+                    <button onclick="switchBranchRole('teacher')" class="branch-role-tab whitespace-nowrap text-xs md:text-sm" id="tab-branch-teacher">Teacher</button>
                 </div>
 
                 <!-- Role Switcher -->
-                <div class="hidden md:flex items-center gap-2 bg-slate-50 rounded-full px-3 py-1 border border-slate-200">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Mode:</span>
-                    <select id="role-switcher-header" onchange="switchMainRole(this.value)" class="bg-transparent text-sm font-semibold text-indigo-600 outline-none cursor-pointer">
+                <div class="flex items-center gap-2 bg-slate-50 rounded-full px-2 md:px-3 py-1 border border-slate-200">
+                    <span class="hidden md:inline text-[10px] font-bold text-slate-400 uppercase tracking-wider">Mode:</span>
+                    <select id="role-switcher-header" onchange="switchMainRole(this.value)" class="bg-transparent text-xs md:text-sm font-semibold text-indigo-600 outline-none cursor-pointer">
                         <option value="hq">HQ / ผู้บริหาร</option>
                         <option value="branch">สาขา</option>
                         <option value="parent">ผู้ปกครอง / นักเรียน</option>
@@ -2486,30 +2486,18 @@
                 currentRole = role;
                 isLoggedIn = true;
                 
-                // Update UI based on role type
+                // Update UI based on role type and use switchMainRole for proper display
                 if (role.startsWith('hq-')) {
                     document.getElementById('role-switcher-header').value = 'hq';
-                    document.getElementById('hq-role-tabs').classList.remove('hidden');
-                    document.getElementById('branch-role-tabs').classList.add('hidden');
-                    
-                    // Extract HQ role type
-                    const hqRole = role.replace('hq-', '');
-                    switchHqRole(hqRole);
+                    switchMainRole('hq');
                     
                 } else if (role.startsWith('branch-')) {
                     document.getElementById('role-switcher-header').value = 'branch';
-                    document.getElementById('hq-role-tabs').classList.add('hidden');
-                    document.getElementById('branch-role-tabs').classList.remove('hidden');
-                    
-                    // Extract Branch role type
-                    const branchRole = role.replace('branch-', '');
-                    switchBranchRole(branchRole);
+                    switchMainRole('branch');
                     
                 } else if (role === 'parent') {
                     document.getElementById('role-switcher-header').value = 'parent';
-                    document.getElementById('hq-role-tabs').classList.add('hidden');
-                    document.getElementById('branch-role-tabs').classList.add('hidden');
-                    switchRole('parent');
+                    switchMainRole('parent');
                 }
                 
             }, 500);
@@ -2520,10 +2508,10 @@
             overlay.classList.remove('hide');
             overlay.classList.add('slide-up');
             
-            // Initialize role switcher and tabs
+            // Initialize role switcher and tabs to HQ as default
             document.getElementById('role-switcher-header').value = 'hq';
-            document.getElementById('hq-role-tabs').classList.remove('hidden');
-            document.getElementById('branch-role-tabs').classList.add('hidden');
+            document.getElementById('hq-role-tabs').style.display = 'flex';
+            document.getElementById('branch-role-tabs').style.display = 'none';
         }
 
         // Logout function
