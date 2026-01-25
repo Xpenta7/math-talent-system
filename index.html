@@ -272,26 +272,59 @@
             background: #f1f5f9;
             color: #64748b;
         }
+        /* Sidebar Collapse Styles */
+        #sidebar {
+            width: 16rem;
+        }
+        #sidebar.collapsed {
+            width: 5.5rem;
+        }
+        #sidebar.collapsed .sidebar-text {
+            display: none;
+        }
+        #sidebar.collapsed #sidebar-menu {
+            display: none;
+        }
+        .sidebar-logo {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .sidebar-logo:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        .sidebar-toggle-btn {
+            margin-left: auto;
+            padding: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .sidebar-toggle-btn:hover {
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 6px;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 h-screen overflow-hidden flex">
 
     <!-- ==================== SIDEBAR (DESKTOP) ==================== -->
-    <aside class="w-64 bg-indigo-900 text-white flex-col hidden md:flex shadow-xl transition-all duration-300" id="sidebar">
-        <div class="p-6 flex items-center gap-3 border-b border-indigo-800">
-            <div class="w-10 h-10 bg-orange-400 rounded-lg flex items-center justify-center text-xl font-bold shadow-lg text-white">M</div>
-            <div>
+    <aside class="bg-indigo-900 text-white flex-col hidden md:flex shadow-xl transition-all duration-300" id="sidebar">
+        <div class="p-6 flex items-center gap-3 border-b border-indigo-800 sidebar-logo" onclick="goToHighestRoleDashboard()" title="กลับไปที่ Dashboard หลัก">
+            <div class="w-10 h-10 bg-orange-400 rounded-lg flex items-center justify-center text-xl font-bold shadow-lg text-white flex-shrink-0">M</div>
+            <div class="sidebar-text">
                 <h1 class="font-bold text-lg leading-tight">Math Talent</h1>
                 <p class="text-xs text-indigo-300">System by Dr.Ying</p>
             </div>
+            <button onclick="toggleSidebarCollapse(event)" class="sidebar-toggle-btn p-1" title="ซ่อน/แสดง Sidebar">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            </button>
         </div>
 
         <div class="p-4 border-b border-indigo-800">
             <div class="flex items-center gap-3" onclick="toggleTodoSidebar()" style="cursor: pointer;">
-                <div class="w-8 h-8 rounded-full bg-indigo-700 flex items-center justify-center">
+                <div class="w-8 h-8 rounded-full bg-indigo-700 flex items-center justify-center flex-shrink-0">
                     <i data-lucide="bell" class="w-4 h-4"></i>
                 </div>
-                <div class="flex-1">
+                <div class="sidebar-text flex-1">
                     <p class="text-xs text-indigo-300">คุณมี</p>
                     <p class="text-sm font-bold" id="todo-count">5 งานที่ต้องทำ</p>
                 </div>
@@ -305,13 +338,15 @@
 
         <div class="p-4 bg-indigo-950 border-t border-indigo-800">
             <div class="flex items-center gap-3 cursor-pointer hover:bg-indigo-900 p-2 rounded-lg transition" onclick="toggleIdCardModal()">
-                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Gigi" alt="User" class="w-10 h-10 rounded-full bg-indigo-200" id="sidebar-avatar">
-                <div class="flex-1 min-w-0">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Gigi" alt="User" class="w-10 h-10 rounded-full bg-indigo-200 flex-shrink-0" id="sidebar-avatar">
+                <div class="sidebar-text flex-1 min-w-0">
                     <p class="text-sm font-medium truncate" id="user-name">Gigi The Admin</p>
                     <p class="text-xs text-indigo-400 truncate" id="user-role">Staff ID: MT-888</p>
                 </div>
-                <i data-lucide="qr-code" class="w-5 h-5 text-orange-400"></i>
             </div>
+            <button onclick="openQRCheckIn()" class="w-full mt-3 py-2 bg-indigo-800 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition">
+                <i data-lucide="qr-code" class="w-4 h-4 flex-shrink-0"></i> <span class="sidebar-text">QR Check-in</span>
+            </button>
         </div>
     </aside>
 
@@ -627,7 +662,7 @@
                     </div>
 
                     <!-- System Management -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
                             <h3 class="font-bold text-lg text-slate-800 mb-4">System Settings</h3>
                             <div class="space-y-4">
@@ -643,6 +678,20 @@
                                             </div>
                                         </div>
                                         <i data-lucide="chevron-right" class="w-5 h-5 text-indigo-400"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-purple-50 rounded-xl border border-purple-100 cursor-pointer hover:bg-purple-100" onclick="openModal('role-permissions')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="shield" class="w-5 h-5 text-purple-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">จัดการสิทธิ์ Role</p>
+                                                <p class="text-sm text-slate-600">After School Program และอื่นๆ</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-purple-400"></i>
                                     </div>
                                 </div>
                                 <div class="p-4 bg-green-50 rounded-xl border border-green-100 cursor-pointer hover:bg-green-100" onclick="openModal('backup-system')">
@@ -691,6 +740,138 @@
                                             </div>
                                         </div>
                                         <i data-lucide="chevron-right" class="w-5 h-5 text-purple-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                            <div class="flex flex-col gap-4">
+                                <div>
+                                    <h3 class="font-bold text-lg text-slate-800">After School Program</h3>
+                                    <p class="text-xs text-slate-600 mt-2">สิทธิ์ของคุณ: <span id="current-permissions" class="font-bold">Master</span></p>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <button onclick="setPermissionView('master')" class="px-4 py-2 rounded-lg text-sm font-medium transition" id="perm-btn-master">
+                                        <i data-lucide="check-circle2" class="w-4 h-4 inline mr-1"></i> Master
+                                    </button>
+                                    <button onclick="setPermissionView('teacher')" class="px-4 py-2 rounded-lg text-sm font-medium transition" id="perm-btn-teacher">
+                                        <i data-lucide="eye" class="w-4 h-4 inline mr-1"></i> Teacher
+                                    </button>
+                                    <button onclick="setPermissionView('all')" class="px-4 py-2 rounded-lg text-sm font-medium transition" id="perm-btn-all">
+                                        <i data-lucide="layout" class="w-4 h-4 inline mr-1"></i> ทั้งหมด
+                                    </button>
+                                    <div class="ml-auto">
+                                        <button onclick="openModal('role-permissions')" class="px-3 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">
+                                            <i data-lucide="settings" class="w-4 h-4 inline mr-1"></i> จัดการสิทธิ์
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-4 mt-6" id="after-school-content">
+                                <div class="p-4 bg-pink-50 rounded-xl border border-pink-100 cursor-pointer hover:bg-pink-100" onclick="openModal('after-school-partners')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="school" class="w-5 h-5 text-pink-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">โรงเรียนพันธมิตร</p>
+                                                <p class="text-sm text-slate-600">8 โรงเรียน</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-pink-400"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-cyan-50 rounded-xl border border-cyan-100 cursor-pointer hover:bg-cyan-100" onclick="openModal('after-school-schedule')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="calendar-days" class="w-5 h-5 text-cyan-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">ตารางเรียน & คลาส</p>
+                                                <p class="text-sm text-slate-600">24 คลาส</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-cyan-400"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-rose-50 rounded-xl border border-rose-100 cursor-pointer hover:bg-rose-100" onclick="openModal('after-school-curriculum')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-rose-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="book-marked" class="w-5 h-5 text-rose-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">เอกสาร & หลักสูตร</p>
+                                                <p class="text-sm text-slate-600">ทำการแก้ไข / ดู / ดาวน์โหลด</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-rose-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- View Other Roles -->
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                            <h3 class="font-bold text-lg text-slate-800 mb-4">เข้าดูรายละเอียดจากมุมมอง</h3>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <label class="inline-flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100 transition">
+                                    <input type="radio" name="role-view" onchange="switchToRoleView('master-teacher')" class="w-4 h-4">
+                                    <span class="text-sm font-medium">Master Teacher</span>
+                                </label>
+                                <label class="inline-flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100 transition">
+                                    <input type="radio" name="role-view" onchange="switchToRoleView('hr')" class="w-4 h-4">
+                                    <span class="text-sm font-medium">HR</span>
+                                </label>
+                                <label class="inline-flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100 transition">
+                                    <input type="radio" name="role-view" onchange="switchToRoleView('accounting')" class="w-4 h-4">
+                                    <span class="text-sm font-medium">บัญชี</span>
+                                </label>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="role-view-cards">
+                                <div class="p-4 bg-blue-50 rounded-xl border border-blue-100 cursor-pointer hover:bg-blue-100" onclick="switchHqRole('master-teacher')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="book-open" class="w-5 h-5 text-blue-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">Master Teacher</p>
+                                                <p class="text-sm text-slate-600">หลักสูตร VDO</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-blue-400"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-green-50 rounded-xl border border-green-100 cursor-pointer hover:bg-green-100" onclick="switchHqRole('hr')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="users" class="w-5 h-5 text-green-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">HR Manager</p>
+                                                <p class="text-sm text-slate-600">พนักงาน OT ค่าจ้าง</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-green-400"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-orange-50 rounded-xl border border-orange-100 cursor-pointer hover:bg-orange-100" onclick="switchHqRole('accounting')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="receipt" class="w-5 h-5 text-orange-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">Accountant</p>
+                                                <p class="text-sm text-slate-600">การเงิน รายรับ ใบเสร็จ</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-orange-400"></i>
                                     </div>
                                 </div>
                             </div>
@@ -877,7 +1058,8 @@
                                     <tr>
                                         <th class="p-3 text-left">ชื่อ-นามสกุล</th>
                                         <th class="p-3 text-left">ตำแหน่ง</th>
-                                        <th class="p-3 text-left">ชั่วโมงสอน</th>
+                                        <th class="p-3 text-left">ชั่วโมง/สัปดาห์</th>
+                                        <th class="p-3 text-left">OT</th>
                                         <th class="p-3 text-left">เงินเดือน</th>
                                         <th class="p-3 text-left">สถานะ</th>
                                         <th class="p-3 text-left">การจัดการ</th>
@@ -887,24 +1069,28 @@
                                     <tr class="border-b hover:bg-slate-50">
                                         <td class="p-3">
                                             <div class="flex items-center gap-3">
-                                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=DrYing" class="w-8 h-8 rounded-full">
+                                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Teacher1" class="w-8 h-8 rounded-full">
                                                 <div>
-                                                    <p class="font-medium">Dr.Ying (HQ)</p>
-                                                    <p class="text-xs text-slate-500">HQ-001</p>
+                                                    <p class="font-medium">ครูสมศรี</p>
+                                                    <p class="text-xs text-slate-500">BR-T-009</p>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="p-3">Super Admin</td>
-                                        <td class="p-3">-</td>
-                                        <td class="p-3 font-medium">฿120,000</td>
+                                        <td class="p-3">Teacher</td>
+                                        <td class="p-3"><span class="font-bold">38</span> ชม</td>
+                                        <td class="p-3"><span class="px-2 py-1 bg-orange-100 text-orange-700 rounded text-xs font-bold">+1 ชม</span></td>
+                                        <td class="p-3 font-medium">฿28,000</td>
                                         <td class="p-3"><span class="role-badge bg-green-100 text-green-800">Active</span></td>
                                         <td class="p-3">
                                             <div class="flex gap-1">
-                                                <button onclick="viewEmployee('HQ-001')" class="p-1 text-blue-600 hover:bg-blue-50 rounded">
+                                                <button onclick="viewEmployee('BR-T-009')" class="p-1 text-blue-600 hover:bg-blue-50 rounded" title="ดูรายละเอียด">
                                                     <i data-lucide="eye" class="w-4 h-4"></i>
                                                 </button>
-                                                <button onclick="calculateSalary('HQ-001')" class="p-1 text-green-600 hover:bg-green-50 rounded">
+                                                <button onclick="calculateSalary('BR-T-009')" class="p-1 text-green-600 hover:bg-green-50 rounded" title="คำนวณเงินเดือน">
                                                     <i data-lucide="calculator" class="w-4 h-4"></i>
+                                                </button>
+                                                <button onclick="viewTeachingHours('BR-T-009')" class="p-1 text-purple-600 hover:bg-purple-50 rounded" title="ดูชั่วโมงสอน">
+                                                    <i data-lucide="clock" class="w-4 h-4"></i>
                                                 </button>
                                             </div>
                                         </td>
@@ -912,24 +1098,57 @@
                                     <tr class="border-b hover:bg-slate-50">
                                         <td class="p-3">
                                             <div class="flex items-center gap-3">
-                                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Gigi" class="w-8 h-8 rounded-full">
+                                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Teacher2" class="w-8 h-8 rounded-full">
                                                 <div>
-                                                    <p class="font-medium">Teacher Gigi</p>
-                                                    <p class="text-xs text-slate-500">BR-M-005</p>
+                                                    <p class="font-medium">ครูภูมิ</p>
+                                                    <p class="text-xs text-slate-500">BR-T-010</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="p-3">Teacher</td>
+                                        <td class="p-3"><span class="font-bold">42</span> ชม</td>
+                                        <td class="p-3"><span class="px-2 py-1 bg-orange-100 text-orange-700 rounded text-xs font-bold">+5 ชม</span></td>
+                                        <td class="p-3 font-medium">฿29,500</td>
+                                        <td class="p-3"><span class="role-badge bg-green-100 text-green-800">Active</span></td>
+                                        <td class="p-3">
+                                            <div class="flex gap-1">
+                                                <button onclick="viewEmployee('BR-T-010')" class="p-1 text-blue-600 hover:bg-blue-50 rounded" title="ดูรายละเอียด">
+                                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                                </button>
+                                                <button onclick="calculateSalary('BR-T-010')" class="p-1 text-green-600 hover:bg-green-50 rounded" title="คำนวณเงินเดือน">
+                                                    <i data-lucide="calculator" class="w-4 h-4"></i>
+                                                </button>
+                                                <button onclick="viewTeachingHours('BR-T-010')" class="p-1 text-purple-600 hover:bg-purple-50 rounded" title="ดูชั่วโมงสอน">
+                                                    <i data-lucide="clock" class="w-4 h-4"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b hover:bg-slate-50">
+                                        <td class="p-3">
+                                            <div class="flex items-center gap-3">
+                                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" class="w-8 h-8 rounded-full">
+                                                <div>
+                                                    <p class="font-medium">ครูนัสตูน</p>
+                                                    <p class="text-xs text-slate-500">BR-M-003</p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="p-3">Branch Manager</td>
-                                        <td class="p-3">80 ชม.</td>
-                                        <td class="p-3 font-medium">฿45,000</td>
+                                        <td class="p-3"><span class="font-bold">25</span> ชม</td>
+                                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">-</span></td>
+                                        <td class="p-3 font-medium">฿35,000</td>
                                         <td class="p-3"><span class="role-badge bg-green-100 text-green-800">Active</span></td>
                                         <td class="p-3">
                                             <div class="flex gap-1">
-                                                <button onclick="viewEmployee('BR-M-005')" class="p-1 text-blue-600 hover:bg-blue-50 rounded">
+                                                <button onclick="viewEmployee('BR-M-003')" class="p-1 text-blue-600 hover:bg-blue-50 rounded" title="ดูรายละเอียด">
                                                     <i data-lucide="eye" class="w-4 h-4"></i>
                                                 </button>
-                                                <button onclick="calculateSalary('BR-M-005')" class="p-1 text-green-600 hover:bg-green-50 rounded">
+                                                <button onclick="calculateSalary('BR-M-003')" class="p-1 text-green-600 hover:bg-green-50 rounded" title="คำนวณเงินเดือน">
                                                     <i data-lucide="calculator" class="w-4 h-4"></i>
+                                                </button>
+                                                <button onclick="viewTeachingHours('BR-M-003')" class="p-1 text-purple-600 hover:bg-purple-50 rounded" title="ดูชั่วโมงสอน">
+                                                    <i data-lucide="clock" class="w-4 h-4"></i>
                                                 </button>
                                             </div>
                                         </td>
@@ -1264,6 +1483,42 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Access Admin & Teacher Views -->
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                            <h3 class="font-bold text-lg text-slate-800 mb-4">เปิดดูรายละเอียดจากมุมมอง</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="p-4 bg-cyan-50 rounded-xl border border-cyan-100 cursor-pointer hover:bg-cyan-100" onclick="switchBranchRole('admin')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="shield-check" class="w-5 h-5 text-cyan-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">Admin View</p>
+                                                <p class="text-sm text-slate-600">การเงินและการชำระเงิน</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-cyan-400"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-green-50 rounded-xl border border-green-100 cursor-pointer hover:bg-green-100" onclick="switchBranchRole('teacher')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="graduation-cap" class="w-5 h-5 text-green-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">Teacher View</p>
+                                                <p class="text-sm text-slate-600">ตารางสอนและนักเรียน</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-green-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -1403,6 +1658,71 @@
                         </div>
                         <button onclick="openModal('full-schedule')" class="w-full mt-4 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-200">ดูตารางเรียนทั้งหมด</button>
                     </div>
+
+                    <!-- After School Program -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mt-6">
+                        <div class="flex flex-col gap-4">
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-800">After School Program</h3>
+                                <p class="text-xs text-slate-600 mt-2">สิทธิ์ของคุณ: <span id="current-permissions" class="font-bold">Teacher</span></p>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="setPermissionView('master')" class="px-4 py-2 rounded-lg text-sm font-medium transition" id="perm-btn-master">
+                                    <i data-lucide="check-circle2" class="w-4 h-4 inline mr-1"></i> Master
+                                </button>
+                                <button onclick="setPermissionView('teacher')" class="px-4 py-2 rounded-lg text-sm font-medium transition" id="perm-btn-teacher">
+                                    <i data-lucide="eye" class="w-4 h-4 inline mr-1"></i> Teacher
+                                </button>
+                                <button onclick="setPermissionView('all')" class="px-4 py-2 rounded-lg text-sm font-medium transition" id="perm-btn-all">
+                                    <i data-lucide="layout" class="w-4 h-4 inline mr-1"></i> ทั้งหมด
+                                </button>
+                            </div>
+                        </div>
+                        <div class="space-y-4 mt-6" id="after-school-content">
+                            <div class="p-4 bg-pink-50 rounded-xl border border-pink-100 cursor-pointer hover:bg-pink-100" onclick="openModal('after-school-partners')">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
+                                            <i data-lucide="school" class="w-5 h-5 text-pink-600"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">โรงเรียนพันธมิตร</p>
+                                            <p class="text-sm text-slate-600">8 โรงเรียน</p>
+                                        </div>
+                                    </div>
+                                    <i data-lucide="chevron-right" class="w-5 h-5 text-pink-400"></i>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-cyan-50 rounded-xl border border-cyan-100 cursor-pointer hover:bg-cyan-100" onclick="openModal('after-school-schedule')">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center">
+                                            <i data-lucide="calendar-days" class="w-5 h-5 text-cyan-600"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">ตารางเรียน & คลาส</p>
+                                            <p class="text-sm text-slate-600">24 คลาส</p>
+                                        </div>
+                                    </div>
+                                    <i data-lucide="chevron-right" class="w-5 h-5 text-cyan-400"></i>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-rose-50 rounded-xl border border-rose-100 cursor-pointer hover:bg-rose-100" onclick="openModal('after-school-curriculum')">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-rose-100 rounded-lg flex items-center justify-center">
+                                            <i data-lucide="book-marked" class="w-5 h-5 text-rose-600"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">เอกสาร & หลักสูตร</p>
+                                            <p class="text-sm text-slate-600">ทำการแก้ไข / ดู / ดาวน์โหลด</p>
+                                        </div>
+                                    </div>
+                                    <i data-lucide="chevron-right" class="w-5 h-5 text-rose-400"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Branch Teacher View -->
@@ -1415,7 +1735,7 @@
                     </div>
 
                     <!-- Teacher Stats -->
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 mb-8">
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6 mb-8">
                         <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 card-mobile">
                             <div class="flex justify-between items-start">
                                 <div>
@@ -1429,11 +1749,21 @@
                         <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 card-mobile">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <p class="text-slate-500 text-sm">คาบสอนสัปดาห์นี้</p>
-                                    <h3 class="text-2xl md:text-3xl font-bold text-indigo-900 mt-1">8</h3>
-                                    <p class="text-slate-500 text-xs mt-1">16 ชั่วโมง</p>
+                                    <p class="text-slate-500 text-sm">ชั่วโมงสอนเดือนนี้</p>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-green-600 mt-1">28</h3>
+                                    <p class="text-slate-500 text-xs mt-1">จากเป้า 30 ชม</p>
                                 </div>
-                                <div class="p-3 bg-green-50 rounded-xl text-green-500"><i data-lucide="calendar"></i></div>
+                                <div class="p-3 bg-green-50 rounded-xl text-green-500"><i data-lucide="clock"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 card-mobile">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">OT ชั่วโมงเกิน</p>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-orange-600 mt-1" id="teacher-ot-hours">0</h3>
+                                    <p class="text-slate-500 text-xs mt-1">เกิน 7 ชม/สัปดาห์</p>
+                                </div>
+                                <div class="p-3 bg-orange-50 rounded-xl text-orange-500"><i data-lucide="alert-circle"></i></div>
                             </div>
                         </div>
                         <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 card-mobile">
@@ -1454,6 +1784,57 @@
                                     <p class="text-slate-500 text-xs mt-1">ดูแล้ว 2/5</p>
                                 </div>
                                 <div class="p-3 bg-purple-50 rounded-xl text-purple-500"><i data-lucide="video"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Teaching Hours Summary -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-8">
+                        <h3 class="font-bold text-lg text-slate-800 mb-4">รายละเอียดชั่วโมงสอน</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-7 gap-3">
+                            <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-100 text-center">
+                                <p class="text-xs text-slate-600 mb-1">อาจร</p>
+                                <p class="font-bold text-lg text-indigo-900">6</p>
+                                <p class="text-xs text-slate-500">ชม</p>
+                            </div>
+                            <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-100 text-center">
+                                <p class="text-xs text-slate-600 mb-1">จ.ศ.</p>
+                                <p class="font-bold text-lg text-indigo-900">8</p>
+                                <p class="text-xs text-slate-500">ชม</p>
+                            </div>
+                            <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-100 text-center">
+                                <p class="text-xs text-slate-600 mb-1">พ.ศ.</p>
+                                <p class="font-bold text-lg text-indigo-900">7</p>
+                                <p class="text-xs text-slate-500">ชม</p>
+                            </div>
+                            <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-100 text-center">
+                                <p class="text-xs text-slate-600 mb-1">พฤ.ศ.</p>
+                                <p class="font-bold text-lg text-indigo-900">5</p>
+                                <p class="text-xs text-slate-500">ชม</p>
+                            </div>
+                            <div class="p-3 bg-orange-50 rounded-xl border border-orange-100 text-center">
+                                <p class="text-xs text-slate-600 mb-1">ศ.ศ.</p>
+                                <p class="font-bold text-lg text-orange-600">8</p>
+                                <p class="text-xs text-slate-500">ชม <span class="text-orange-600 font-bold">+1 OT</span></p>
+                            </div>
+                            <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-100 text-center">
+                                <p class="text-xs text-slate-600 mb-1">ส.ศ.</p>
+                                <p class="font-bold text-lg text-indigo-900">4</p>
+                                <p class="text-xs text-slate-500">ชม</p>
+                            </div>
+                            <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-100 text-center">
+                                <p class="text-xs text-slate-600 mb-1">ส.ส.</p>
+                                <p class="font-bold text-lg text-indigo-900">0</p>
+                                <p class="text-xs text-slate-500">ชม</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-slate-700"><span class="font-bold">รวม</span> 38 ชม/สัปดาห์</p>
+                                    <p class="text-xs text-slate-600 mt-1">OT รวม: 1 ชม | ค่า OT: ฿150/ชม</p>
+                                </div>
+                                <button onclick="openModal('teaching-hours')" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">รายงานที่ละเอียด</button>
                             </div>
                         </div>
                     </div>
@@ -1562,34 +1943,48 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                        <!-- Main Content Area (Right side - Topics) -->
-                        <div class="lg:col-span-3">
-                            <!-- Subtopics Grid -->
-                            <div class="space-y-3" id="vdo-subtopics-grid">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Topics List (Left side - Narrow) -->
+                        <div class="lg:col-span-1">
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 sticky top-20 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
+                                <h3 class="font-bold text-sm text-slate-800 mb-3">หัวข้อการเรียน</h3>
                                 <!-- Topics will be generated here -->
+                                <div class="space-y-2" id="vdo-topics-list">
+                                    <!-- Topics will be generated dynamically -->
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Video Player Section -->
-                        <div class="lg:col-span-1">
-                            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 sticky top-20">
-                                <div class="mb-4">
-                                    <h3 class="font-bold text-lg text-slate-800 mb-2" id="vdo-title">เลือกวิดีโอ</h3>
-                                    <p class="text-sm text-slate-600" id="vdo-description">เลือกหัวข้อจากด้านซ้าย</p>
-                                </div>
-                                <div id="video-player" class="bg-slate-900 rounded-xl overflow-hidden mb-4" style="aspect-ratio: 16/9;">
-                                    <div class="w-full h-full flex items-center justify-center text-slate-400">
-                                        <i data-lucide="play-circle" class="w-12 h-12"></i>
+                        <!-- Video Player & Subtopics (Right side - Wide) -->
+                        <div class="lg:col-span-2">
+                            <div class="grid grid-cols-1 gap-6">
+                                <!-- Video Player Section -->
+                                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                                    <div class="mb-4">
+                                        <h3 class="font-bold text-lg text-slate-800 mb-2" id="vdo-title">เลือกวิดีโอ</h3>
+                                        <p class="text-sm text-slate-600" id="vdo-description">เลือกหัวข้อจากด้านซ้าย</p>
+                                    </div>
+                                    <div id="video-player" class="bg-slate-900 rounded-xl overflow-hidden mb-4" style="aspect-ratio: 16/9; width: 100%;">
+                                        <div class="w-full h-full flex items-center justify-center text-slate-400">
+                                            <i data-lucide="play-circle" class="w-12 h-12"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col gap-3">
+                                        <button onclick="startVdoLesson()" class="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700">
+                                            <i data-lucide="play" class="w-4 h-4 inline mr-2"></i> เล่น
+                                        </button>
+                                        <button onclick="markAsWatched()" class="w-full py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700" id="mark-watched-btn" style="display:none;">
+                                            <i data-lucide="check" class="w-4 h-4 inline mr-2"></i> ตั้งเป็นดูแล้ว
+                                        </button>
                                     </div>
                                 </div>
-                                <div class="flex flex-col gap-3">
-                                    <button onclick="startVdoLesson()" class="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700">
-                                        <i data-lucide="play" class="w-4 h-4 inline mr-2"></i> เล่น
-                                    </button>
-                                    <button onclick="markAsWatched()" class="flex-1 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700" id="mark-watched-btn" style="display:none;">
-                                        <i data-lucide="check" class="w-4 h-4 inline mr-2"></i> ตั้งเป็นดูแล้ว
-                                    </button>
+
+                                <!-- Subtopics Grid -->
+                                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                                    <h3 class="font-bold text-lg text-slate-800 mb-4">หัวข้อย่อย</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="vdo-subtopics-grid">
+                                        <!-- Subtopics will be generated here -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -2084,8 +2479,7 @@
                     { icon: 'users', text: 'HR', action: 'switchHqRole("hr")' },
                     { icon: 'credit-card', text: 'บัญชี', action: 'switchHqRole("accounting")' },
                     { icon: 'video', text: 'VDO Hub (Central)', action: 'openModal("hq-video-hub")' },
-                    { icon: 'settings', text: 'System Settings', action: 'openModal("system-settings")' },
-                    { icon: 'qr-code', text: 'QR Check-in', action: 'openQRCheckIn()' }
+                    { icon: 'settings', text: 'System Settings', action: 'openModal("system-settings")' }
                 ]
             },
             'hq-master-teacher': {
@@ -2097,6 +2491,7 @@
                     { icon: 'layout-dashboard', text: 'แดชบอร์ด', action: 'switchHqRole("master-teacher")' },
                     { icon: 'book-open', text: 'จัดการเอกสารหลักสูตร', action: 'openModal("curriculum-management")' },
                     { icon: 'upload', text: 'อัปโหลดเอกสาร', action: 'openModal("upload-document")' },
+                    { icon: 'package', text: 'สต็อกสื่อการสอน', action: 'openModal("media-stock")' },
                     { icon: 'video', text: 'VDO Training', action: 'openModal("video-training")' },
                     { icon: 'youtube', text: 'YouTube Integration', action: 'openModal("youtube-integration")' },
                     { icon: 'printer', text: 'พิมพ์เอกสาร', action: 'openModal("print-documents")' },
@@ -2142,7 +2537,6 @@
                     { icon: 'credit-card', text: 'การเงินสาขา', action: 'openModal("branch-finance")' },
                     { icon: 'calendar', text: 'ตารางเรียนทั้งหมด', action: 'openModal("branch-schedule")' },
                     { icon: 'video', text: 'VDO Training', action: 'openModal("branch-training")' },
-                    { icon: 'qr-code', text: 'QR Check-in', action: 'openQRCheckIn()' },
                     { icon: 'bar-chart-3', text: 'รายงานสาขา', action: 'openModal("branch-reports")' },
                     { icon: 'receipt', text: 'ใบเสร็จ/ภาษี', action: 'openModal("branch-invoices")' }
                 ]
@@ -2173,8 +2567,7 @@
                     { icon: 'clipboard-list', text: 'บันทึกการสอน', action: 'toggleDailyReport()' },
                     { icon: 'calendar-x', text: 'แจ้งลา/สลับคาบ', action: 'openModal("teacher-leave")' },
                     { icon: 'book-open', text: 'เอกสารหลักสูตร', action: 'openModal("teacher-documents")' },
-                    { icon: 'video', text: 'VDO Training', action: 'switchToTeacherTraining()' },
-                    { icon: 'qr-code', text: 'QR เข้างาน', action: 'openQRCheckIn()' }
+                    { icon: 'video', text: 'VDO Training', action: 'switchToTeacherTraining()' }
                 ]
             },
             'parent': {
@@ -2208,6 +2601,24 @@
         let currentBranchRole = 'executive';
         let isLoggedIn = false;
         let studentCredit = 8;
+        
+        // User Permissions for After School Program
+        // Possible values: 'master' (full access) or 'teacher' (read-only)
+        let userPermissions = {
+            'afterSchool': ['master'] // Can have multiple: ['master', 'teacher']
+        };
+        
+        // Role Permissions - Manage which roles have access to After School Program
+        let rolePermissions = {
+            'hq-super-admin': ['master'],
+            'hq-master-teacher': ['master'],
+            'hq-hr': [],
+            'hq-accounting': [],
+            'branch-executive': [],
+            'branch-admin': ['teacher'],
+            'branch-teacher': ['teacher'],
+            'parent': []
+        };
         
         // VDO Training Data
         const vdoTrainingData = {
@@ -2355,6 +2766,9 @@
             updateLoginUI('hq-super-admin');
             showLoginOverlay();
             
+            // Restore sidebar state
+            restoreSidebarState();
+            
             // Generate QR codes
             setTimeout(() => {
                 generateQRCode('student-qr-code', 'STUDENT:ST-888|COURSE:MATH-VISUAL-2|BRANCH:RAMA9');
@@ -2486,6 +2900,12 @@
                 currentRole = role;
                 isLoggedIn = true;
                 
+                // Update user permissions based on current role
+                userPermissions.afterSchool = rolePermissions[currentRole] || [];
+                
+                // Update permissions display
+                updatePermissionsDisplay();
+                
                 // Update UI based on role type and use switchMainRole for proper display
                 if (role.startsWith('hq-')) {
                     document.getElementById('role-switcher-header').value = 'hq';
@@ -2560,6 +2980,9 @@
         function switchRole(role) {
             if (!isLoggedIn) return;
             
+            // Set currentRole first
+            currentRole = role;
+            
             // Hide all role views
             document.querySelectorAll('.role-view').forEach(el => el.classList.add('hide'));
             
@@ -2588,6 +3011,9 @@
                 document.getElementById('mobile-user-name').innerText = config.name;
                 document.getElementById('mobile-user-role').innerText = `${config.role} • ID: ${config.id}`;
             }
+            
+            // Update user permissions based on current role
+            userPermissions.afterSchool = rolePermissions[currentRole] || [];
             
             // Refresh icons
             setTimeout(() => lucide.createIcons(), 100);
@@ -2635,6 +3061,13 @@
             currentRole = roleKey;
             updateSidebarMenu(roleKey);
             updateUserInfo(roleKey);
+            
+            // Update user permissions based on current role
+            userPermissions.afterSchool = rolePermissions[currentRole] || [];
+            updatePermissionsDisplay();
+            
+            // Update user permissions based on current role
+            userPermissions.afterSchool = rolePermissions[currentRole] || [];
         }
 
         // Switch Branch Role
@@ -2678,6 +3111,10 @@
             currentRole = roleKey;
             updateSidebarMenu(roleKey);
             updateUserInfo(roleKey);
+            
+            // Update user permissions based on current role
+            userPermissions.afterSchool = rolePermissions[currentRole] || [];
+            updatePermissionsDisplay();
         }
 
         // Update page title
@@ -2835,6 +3272,68 @@
             alert('📱 ทดลองสแกน QR Code จากบัตรนักเรียนเต็มหน้าจอ\n\nแสดงหน้าจอนี้ให้แอดมินสาขาสแกนได้เลย!');
         }
 
+        // Toggle After School Permissions
+        function togglePermission(type) {
+            const checkbox = document.getElementById(`perm-${type}`);
+            if (checkbox.checked) {
+                if (!userPermissions.afterSchool.includes(type)) {
+                    userPermissions.afterSchool.push(type);
+                }
+            } else {
+                userPermissions.afterSchool = userPermissions.afterSchool.filter(p => p !== type);
+            }
+            console.log('Updated permissions:', userPermissions.afterSchool);
+            
+            // Update the current permissions display
+            const statusEl = document.querySelector('.permission-status');
+            if (statusEl) {
+                const master = userPermissions.afterSchool.includes('master');
+                const teacher = userPermissions.afterSchool.includes('teacher');
+                statusEl.textContent = (master && teacher) ? 'Master + Teacher' : master ? 'Master เท่านั้น' : teacher ? 'Teacher เท่านั้น' : 'ไม่มีสิทธิ์';
+            }
+        }
+
+        // Update Role Permissions
+        function updateRolePermissions(roleKey, permType, isChecked) {
+            if (isChecked) {
+                if (!rolePermissions[roleKey].includes(permType)) {
+                    rolePermissions[roleKey].push(permType);
+                }
+            } else {
+                rolePermissions[roleKey] = rolePermissions[roleKey].filter(p => p !== permType);
+            }
+            console.log(`Updated ${roleKey} permissions:`, rolePermissions[roleKey]);
+            
+            // Update user permissions if current role changed
+            if (roleKey === currentRole) {
+                userPermissions.afterSchool = rolePermissions[currentRole] || [];
+                updatePermissionsDisplay();
+            }
+        }
+        
+        // Update Permissions Display
+        function updatePermissionsDisplay() {
+            const permDisplay = document.getElementById('current-permissions');
+            if (permDisplay) {
+                const perms = userPermissions.afterSchool;
+                if (perms.includes('master') && perms.includes('teacher')) {
+                    permDisplay.textContent = 'Master + Teacher';
+                } else if (perms.includes('master')) {
+                    permDisplay.textContent = 'Master';
+                } else if (perms.includes('teacher')) {
+                    permDisplay.textContent = 'Teacher';
+                } else {
+                    permDisplay.textContent = 'ไม่มีสิทธิ์';
+                }
+            }
+            
+            // Update permission buttons visibility and state
+            updatePermissionButtons();
+            filterPermissionDisplay();
+        }
+
+        // Simulate QR Scan from Card
+
         // Open QR Check-in modal
         function openQRCheckIn() {
             const modal = document.getElementById('qr-checkin-modal');
@@ -2865,7 +3364,84 @@
             
             switch(modalType) {
                 case 'branch-finance':
-                    modalTitle = 'การเงินสาขา';
+                    modalTitle = 'รายงานการเงินสาขา';
+                    modalContent = `
+                        <div class="p-6 max-h-96 overflow-y-auto">
+                            <!-- Finance Summary -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                <div class="p-4 bg-green-50 rounded-xl border border-green-100">
+                                    <p class="text-sm text-slate-600 mb-1">รายรับค่าคอร์ส (เดือนนี้)</p>
+                                    <p class="text-2xl font-bold text-green-700">฿2,400,000</p>
+                                    <p class="text-xs text-green-600 mt-1">↑ 15% จากเดือนที่แล้ว</p>
+                                </div>
+                                <div class="p-4 bg-orange-50 rounded-xl border border-orange-100">
+                                    <p class="text-sm text-slate-600 mb-1">ค่าสอนครู (เดือนนี้)</p>
+                                    <p class="text-2xl font-bold text-orange-700">฿420,000</p>
+                                    <p class="text-xs text-orange-600 mt-1">ครู 15 คน</p>
+                                </div>
+                                <div class="p-4 bg-blue-50 rounded-xl border border-blue-100">
+                                    <p class="text-sm text-slate-600 mb-1">กำไรสุทธิ (เดือนนี้)</p>
+                                    <p class="text-2xl font-bold text-blue-700">฿1,980,000</p>
+                                    <p class="text-xs text-blue-600 mt-1">82.5% มาร์จิน</p>
+                                </div>
+                            </div>
+
+                            <!-- Revenue Breakdown -->
+                            <div class="mb-6">
+                                <h4 class="font-bold text-slate-800 mb-3">รายรับตามคอร์ส</h4>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                                        <span class="text-sm">Math Visual Level 1</span>
+                                        <span class="font-bold">฿840,000</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                                        <span class="text-sm">Math Visual Level 2</span>
+                                        <span class="font-bold">฿720,000</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                                        <span class="text-sm">Science Explorer</span>
+                                        <span class="font-bold">฿600,000</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                                        <span class="text-sm">English Communication</span>
+                                        <span class="font-bold">฿240,000</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Monthly Comparison -->
+                            <div class="mb-6">
+                                <h4 class="font-bold text-slate-800 mb-3">เปรียบเทียบรายได้ 3 เดือนล่าสุด</h4>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">กุมภาพันธ์ 2026</span>
+                                        <div class="flex-1 ml-4 bg-slate-200 rounded-full h-6">
+                                            <div class="bg-green-500 h-full rounded-full" style="width: 85%;"></div>
+                                        </div>
+                                        <span class="text-sm font-bold ml-4">฿2,040,000</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">มีนาคม 2026</span>
+                                        <div class="flex-1 ml-4 bg-slate-200 rounded-full h-6">
+                                            <div class="bg-green-500 h-full rounded-full" style="width: 91%;"></div>
+                                        </div>
+                                        <span class="text-sm font-bold ml-4">฿2,180,000</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">เมษายน 2026 (ปัจจุบัน)</span>
+                                        <div class="flex-1 ml-4 bg-slate-200 rounded-full h-6">
+                                            <div class="bg-green-500 h-full rounded-full" style="width: 100%;"></div>
+                                        </div>
+                                        <span class="text-sm font-bold ml-4">฿2,400,000</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 mt-6">
+                            <button onclick="openModal('export-report')" class="flex-1 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">📊 ส่งออกรายงาน</button>
+                            <button onclick="closeModal()" class="flex-1 py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-300">ปิด</button>
+                        </div>
+                    `;
                     break;
                 case 'branch-schedule':
                     modalTitle = 'ตารางเรียนทั้งหมดในสาขา';
@@ -2888,8 +3464,303 @@
                 case 'teacher-documents':
                     modalTitle = 'เอกสารหลักสูตร (ดูและพิมพ์)';
                     break;
+                case 'media-stock':
+                    modalTitle = 'สต็อกสื่อการสอน';
+                    modalContent = `
+                        <div class="p-6 max-h-96 overflow-y-auto">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                    <p class="text-sm text-slate-600 mb-1">หนังสือเรียน</p>
+                                    <p class="text-2xl font-bold text-blue-700">45</p>
+                                    <p class="text-xs text-blue-600 mt-1">เล่ม</p>
+                                </div>
+                                <div class="p-4 bg-green-50 rounded-lg border border-green-200">
+                                    <p class="text-sm text-slate-600 mb-1">สื่อเสริม</p>
+                                    <p class="text-2xl font-bold text-green-700">128</p>
+                                    <p class="text-xs text-green-600 mt-1">ชิ้น</p>
+                                </div>
+                                <div class="p-4 bg-orange-50 rounded-lg border border-orange-200">
+                                    <p class="text-sm text-slate-600 mb-1">อุปกรณ์สอน</p>
+                                    <p class="text-2xl font-bold text-orange-700">32</p>
+                                    <p class="text-xs text-orange-600 mt-1">ชิ้น</p>
+                                </div>
+                                <div class="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                                    <p class="text-sm text-slate-600 mb-1">แบบฝึกหัด</p>
+                                    <p class="text-2xl font-bold text-purple-700">52</p>
+                                    <p class="text-xs text-purple-600 mt-1">ชุด</p>
+                                </div>
+                            </div>
+
+                            <h4 class="font-bold text-slate-800 mb-3">รายละเอียดสต็อก</h4>
+                            <div class="space-y-2 mb-4">
+                                <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                                    <div class="flex-1">
+                                        <p class="font-medium text-sm">Math Visual Level 1-3 (หนังสือ)</p>
+                                        <p class="text-xs text-slate-600">พร้อมใช้: 45 เล่ม</p>
+                                    </div>
+                                    <button onclick="alert('ดูรายละเอียดหนังสือ Math Visual L1-3')" class="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">ดู</button>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                                    <div class="flex-1">
+                                        <p class="font-medium text-sm">สื่อคณิตศาสตร์เสริม</p>
+                                        <p class="text-xs text-slate-600">พร้อมใช้: 128 ชิ้น | สต็อกต่ำ: 35 ชิ้น</p>
+                                    </div>
+                                    <button onclick="alert('ส่งคำขออุปกรณ์เพิ่มเติม')" class="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700">สั่ง</button>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                                    <div class="flex-1">
+                                        <p class="font-medium text-sm">อุปกรณ์สอนทั่วไป</p>
+                                        <p class="text-xs text-slate-600">พร้อมใช้: 32 ชิ้น</p>
+                                    </div>
+                                    <button onclick="alert('ดูรายละเอียดอุปกรณ์')" class="px-3 py-1 bg-orange-600 text-white rounded text-xs hover:bg-orange-700">ดู</button>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                                    <div class="flex-1">
+                                        <p class="font-medium text-sm">แบบฝึกหัดและคำตอบ</p>
+                                        <p class="text-xs text-slate-600">พร้อมใช้: 52 ชุด</p>
+                                    </div>
+                                    <button onclick="alert('ดาวน์โหลดแบบฝึกหัด')" class="px-3 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700">ดาวน์โหลด</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 mt-6">
+                            <button onclick="alert('อัปโหลดสต็อกสื่อใหม่')" class="flex-1 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">📤 อัปโหลดสิ่งของ</button>
+                            <button onclick="closeModal()" class="flex-1 py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-300">ปิด</button>
+                        </div>
+                    `;
+                    break;
+                case 'after-school-partners':
+                    modalTitle = 'โรงเรียนพันธมิตร (After School)';
+                    const masterPerm1 = userPermissions.afterSchool.includes('master');
+                    modalContent = `
+                        <div class="p-6 max-h-96 overflow-y-auto">
+                            <div class="space-y-3 mb-4">
+                                <div class="p-4 bg-pink-50 rounded-lg border border-pink-200">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="font-bold">โรงเรียนสวนกุหลาบ</p>
+                                            <p class="text-sm text-slate-600">สถาบัน • นักเรียน 120 คน</p>
+                                            <p class="text-xs text-slate-500 mt-1">พื้นที่: กรุงเทพฯ • ผู้ประสานงาน: นายอ้อย</p>
+                                        </div>
+                                        <button onclick="alert('ดูรายละเอียดโรงเรียนสวนกุหลาบ')" class="px-3 py-1 bg-pink-600 text-white rounded text-xs hover:bg-pink-700">ดู</button>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-pink-50 rounded-lg border border-pink-200">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="font-bold">โรงเรียนอ่านการแสง</p>
+                                            <p class="text-sm text-slate-600">สถาบัน • นักเรียน 85 คน</p>
+                                            <p class="text-xs text-slate-500 mt-1">พื้นที่: กรุงเทพฯ • ผู้ประสานงาน: นางเสาวลักษณ์</p>
+                                        </div>
+                                        <button onclick="alert('ดูรายละเอียดโรงเรียนอ่านการแสง')" class="px-3 py-1 bg-pink-600 text-white rounded text-xs hover:bg-pink-700">ดู</button>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-pink-50 rounded-lg border border-pink-200">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="font-bold">โรงเรียนคณะสมบัติ</p>
+                                            <p class="text-sm text-slate-600">สถาบัน • นักเรียน 110 คน</p>
+                                            <p class="text-xs text-slate-500 mt-1">พื้นที่: กรุงเทพฯ • ผู้ประสานงาน: อาจารย์นุ่น</p>
+                                        </div>
+                                        <button onclick="alert('ดูรายละเอียดโรงเรียนคณะสมบัติ')" class="px-3 py-1 bg-pink-600 text-white rounded text-xs hover:bg-pink-700">ดู</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-sm font-bold text-slate-800 mb-2">รวมทั้งสิ้น: 8 โรงเรียน • นักเรียน 650 คน</p>
+                        </div>
+                        <div class="flex gap-3 mt-6">
+                            ${masterPerm1 ? '<button onclick="alert(\'เพิ่มโรงเรียนพันธมิตรใหม่\')" class="flex-1 py-2 bg-pink-600 text-white rounded-lg text-sm font-medium hover:bg-pink-700">🏫 เพิ่มโรงเรียน</button>' : ''}
+                            <button onclick="closeModal()" class="flex-1 py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-300">ปิด</button>
+                        </div>
+                    `;
+                    break;
+                case 'after-school-schedule':
+                    modalTitle = 'ตารางเรียน & คลาส (After School)';
+                    const masterPerm2 = userPermissions.afterSchool.includes('master');
+                    modalContent = `
+                        <div class="p-6 max-h-96 overflow-y-auto">
+                            <div class="mb-4">
+                                <h4 class="font-bold text-slate-800 mb-3">คลาสในสัปดาห์นี้ • 24 คลาส</h4>
+                                <div class="space-y-2">
+                                    <div class="p-3 bg-cyan-50 rounded-lg border border-cyan-200">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <p class="font-medium text-sm">Math Visual L1 @ โรงเรียนสวนกุหลาบ</p>
+                                                <p class="text-xs text-slate-600">จันทร์ 16:30-17:30 • ครูสมศรี</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="p-3 bg-cyan-50 rounded-lg border border-cyan-200">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <p class="font-medium text-sm">Science Explorer @ โรงเรียนอ่านการแสง</p>
+                                                <p class="text-xs text-slate-600">อังคาร 16:30-17:30 • ครูภูมิ</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="p-3 bg-cyan-50 rounded-lg border border-cyan-200">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <p class="font-medium text-sm">Math Visual L2 @ โรงเรียนคณะสมบัติ</p>
+                                                <p class="text-xs text-slate-600">พุธ 17:00-18:00 • ครูนัสตูน</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 mt-6">
+                            ${masterPerm2 ? '<button onclick="alert(\'ดูตารางเรียนทั้งหมด\')" class="flex-1 py-2 bg-cyan-600 text-white rounded-lg text-sm font-medium hover:bg-cyan-700">📅 ตารางเต็ม</button>' : ''}
+                            <button onclick="closeModal()" class="flex-1 py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-300">ปิด</button>
+                        </div>
+                    `;
+                    break;
+                case 'after-school-curriculum':
+                    modalTitle = 'เอกสาร & แผนการสอน (After School)';
+                    const hasMasterPermission = userPermissions.afterSchool.includes('master');
+                    const hasTeacherPermission = userPermissions.afterSchool.includes('teacher');
+                    
+                    // Build permission status message
+                    let permissionMsg = '';
+                    if (hasMasterPermission && hasTeacherPermission) {
+                        permissionMsg = 'สิทธิ์: Master + Teacher | สามารถ แก้ไข ลบ อัปโหลด ดู และพิมพ์';
+                    } else if (hasMasterPermission) {
+                        permissionMsg = 'สิทธิ์: Master | สามารถ แก้ไข ลบ อัปโหลด ดู และพิมพ์';
+                    } else if (hasTeacherPermission) {
+                        permissionMsg = 'สิทธิ์: Teacher | สามารถดู และพิมพ์เท่านั้น';
+                    }
+                    
+                    modalContent = `
+                        <div class="p-6 max-h-96 overflow-y-auto">
+                            <div class="space-y-3 mb-4">
+                                <div class="p-4 bg-rose-50 rounded-lg border border-rose-200">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="font-bold">Math Visual Level 1</p>
+                                            <p class="text-xs text-slate-600">แผนการสอน • อัปเดต 15/04/2026</p>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <button onclick="alert('ดูเอกสาร')" class="px-2 py-1 bg-rose-600 text-white rounded text-xs hover:bg-rose-700">ดู</button>
+                                            ${hasMasterPermission ? '<button onclick="alert(\'แก้ไขเอกสาร\')" class="px-2 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700">แก้</button>' : ''}
+                                            <button onclick="alert('ดาวน์โหลด')" class="px-2 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">ดาวน์</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-rose-50 rounded-lg border border-rose-200">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="font-bold">Science Explorer</p>
+                                            <p class="text-xs text-slate-600">แผนการสอน • อัปเดต 12/04/2026</p>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <button onclick="alert('ดูเอกสาร')" class="px-2 py-1 bg-rose-600 text-white rounded text-xs hover:bg-rose-700">ดู</button>
+                                            ${hasMasterPermission ? '<button onclick="alert(\'แก้ไขเอกสาร\')" class="px-2 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700">แก้</button>' : ''}
+                                            <button onclick="alert('ดาวน์โหลด')" class="px-2 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">ดาวน์</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-600 mb-4">${permissionMsg}</p>
+                        </div>
+                        <div class="flex gap-3 mt-6">
+                            ${hasMasterPermission ? '<button onclick="alert(\'อัปโหลดเอกสารใหม่\')" class="flex-1 py-2 bg-rose-600 text-white rounded-lg text-sm font-medium hover:bg-rose-700">📤 อัปโหลด</button>' : ''}
+                            <button onclick="closeModal()" class="flex-1 py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-300">ปิด</button>
+                        </div>
+                    `;
+                    break;
+                case 'after-school-permissions':
+                    modalTitle = 'ตั้งค่าสิทธิ์ After School Program';
+                    const currentMaster = userPermissions.afterSchool.includes('master');
+                    const currentTeacher = userPermissions.afterSchool.includes('teacher');
+                    
+                    modalContent = `
+                        <div class="p-6 max-h-96 overflow-y-auto">
+                            <div class="mb-6">
+                                <p class="text-sm text-slate-600 mb-4">เลือกสิทธิ์การเข้าถึง After School Program:</p>
+                                
+                                <div class="space-y-3">
+                                    <label class="flex items-start gap-3 p-4 bg-indigo-50 rounded-lg border border-indigo-200 cursor-pointer hover:bg-indigo-100">
+                                        <input type="checkbox" id="perm-master" ${currentMaster ? 'checked' : ''} class="w-5 h-5 text-indigo-600 rounded mt-0.5" onchange="togglePermission('master')">
+                                        <div>
+                                            <p class="font-bold text-sm text-slate-800">Master (สิทธิ์เต็ม)</p>
+                                            <p class="text-xs text-slate-600">✓ ดู ✓ ดาวน์โหลด ✓ แก้ไข ✓ ลบ ✓ อัปโหลด</p>
+                                        </div>
+                                    </label>
+                                    
+                                    <label class="flex items-start gap-3 p-4 bg-green-50 rounded-lg border border-green-200 cursor-pointer hover:bg-green-100">
+                                        <input type="checkbox" id="perm-teacher" ${currentTeacher ? 'checked' : ''} class="w-5 h-5 text-green-600 rounded mt-0.5" onchange="togglePermission('teacher')">
+                                        <div>
+                                            <p class="font-bold text-sm text-slate-800">Teacher (สิทธิ์จำกัด)</p>
+                                            <p class="text-xs text-slate-600">✓ ดู ✓ ดาวน์โหลด (Read-only)</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                <p class="text-xs font-bold text-slate-700 mb-2">สิทธิ์ปัจจุบัน:</p>
+                                <p class="text-sm text-slate-600 permission-status">
+                                    ${currentMaster && currentTeacher ? 'Master + Teacher' : currentMaster ? 'Master เท่านั้น' : currentTeacher ? 'Teacher เท่านั้น' : 'ไม่มีสิทธิ์'}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 mt-6">
+                            <button onclick="closeModal()" class="flex-1 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">บันทึก</button>
+                            <button onclick="closeModal()" class="flex-1 py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-300">ยกเลิก</button>
+                        </div>
+                    `;
+                    break;
+                case 'role-permissions':
+                    modalTitle = 'จัดการสิทธิ์ Role - After School Program';
+                    const rolePermissions = {
+                        'hq-super-admin': ['master'],
+                        'hq-master-teacher': ['master'],
+                        'hq-hr': [],
+                        'hq-accounting': [],
+                        'branch-executive': [],
+                        'branch-admin': ['teacher'],
+                        'branch-teacher': ['teacher'],
+                        'parent': []
+                    };
+                    
+                    let rolesHtml = '';
+                    for (let roleKey in rolePermissions) {
+                        const config = roleConfig[roleKey];
+                        const perms = rolePermissions[roleKey];
+                        rolesHtml += `
+                            <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 mb-4">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div>
+                                        <p class="font-bold text-slate-800">${config.name}</p>
+                                        <p class="text-xs text-slate-600">${config.role}</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-3">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" class="role-perm-master w-4 h-4" data-role="${roleKey}" ${perms.includes('master') ? 'checked' : ''} onchange="updateRolePermissions('${roleKey}', 'master', this.checked)">
+                                        <span class="text-sm">Master</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" class="role-perm-teacher w-4 h-4" data-role="${roleKey}" ${perms.includes('teacher') ? 'checked' : ''} onchange="updateRolePermissions('${roleKey}', 'teacher', this.checked)">
+                                        <span class="text-sm">Teacher</span>
+                                    </label>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    modalContent = `
+                        <div class="p-6 max-h-96 overflow-y-auto">
+                            <p class="text-sm text-slate-600 mb-4">เลือกสิทธิ์ After School Program สำหรับแต่ละ Role:</p>
+                            ${rolesHtml}
+                        </div>
+                        <div class="flex gap-3 mt-6">
+                            <button onclick="closeModal()" class="flex-1 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">บันทึก</button>
+                            <button onclick="closeModal()" class="flex-1 py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-300">ปิด</button>
+                        </div>
+                    `;
+                    break;
                 case 'teacher-training':
-                    modalTitle = 'VDO Training สำหรับครู';
                     modalContent = `
                         <div class="p-6 max-h-96 overflow-y-auto">
                             <div class="mb-6">
@@ -3753,6 +4624,157 @@
         }
 
         let carouselTimer = null;
+
+        // ============= Sidebar Collapse Functions =============
+        function toggleSidebarCollapse(event) {
+            event.stopPropagation(); // Prevent triggering parent click
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+            localStorage.setItem('sidebar-collapsed', sidebar.classList.contains('collapsed'));
+            
+            // Rotate the chevron icon
+            const icon = event.target.closest('[data-lucide]');
+            if (icon) {
+                icon.style.transform = sidebar.classList.contains('collapsed') ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
+            
+            // Update icons after collapse
+            setTimeout(() => lucide.createIcons(), 100);
+        }
+
+        // Restore sidebar state on load
+        function restoreSidebarState() {
+            const sidebar = document.getElementById('sidebar');
+            const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+            if (isCollapsed) {
+                sidebar.classList.add('collapsed');
+            }
+        }
+
+        // Go to Highest Role Dashboard
+        function goToHighestRoleDashboard() {
+            // Determine highest role (Super Admin > Master Teacher > Admin > Teacher > Executive > Parent > others)
+            const roleHierarchy = ['hq-super-admin', 'hq-master-teacher', 'hq-hr', 'hq-accounting', 'branch-admin', 'branch-teacher', 'branch-executive', 'parent'];
+            
+            let highestRole = currentRole;
+            for (let role of roleHierarchy) {
+                if (roleConfig.hasOwnProperty(role)) {
+                    highestRole = role;
+                    break;
+                }
+            }
+            
+            // Switch to highest role
+            switchRole(highestRole);
+            
+            // Navigate to its dashboard by switching main role
+            if (highestRole.startsWith('hq-')) {
+                document.getElementById('role-switcher-header').value = 'hq';
+                const hqRole = highestRole.replace('hq-', '').replace('-', '-');
+                if (highestRole === 'hq-super-admin') switchHqRole('super-admin');
+                else if (highestRole === 'hq-master-teacher') switchHqRole('master-teacher');
+                else if (highestRole === 'hq-hr') switchHqRole('hr');
+                else if (highestRole === 'hq-accounting') switchHqRole('accounting');
+            } else if (highestRole.startsWith('branch-')) {
+                document.getElementById('role-switcher-header').value = 'branch';
+                if (highestRole === 'branch-executive') switchBranchRole('executive');
+                else if (highestRole === 'branch-admin') switchBranchRole('admin');
+                else if (highestRole === 'branch-teacher') switchBranchRole('teacher');
+            } else if (highestRole === 'parent') {
+                document.getElementById('role-switcher-header').value = 'parent';
+                switchRole('parent');
+            }
+        }
+
+        // ============= Permission View Management =============
+        let permissionViewMode = 'all'; // Default to showing all
+
+        // Set Permission View Mode
+        function setPermissionView(mode) {
+            permissionViewMode = mode;
+            updatePermissionButtons();
+            filterPermissionDisplay();
+        }
+
+        // Update Permission Display Buttons
+        function updatePermissionButtons() {
+            const buttons = ['master', 'teacher', 'all'];
+            buttons.forEach(btn => {
+                const el = document.getElementById(`perm-btn-${btn}`);
+                if (el) {
+                    if (btn === permissionViewMode) {
+                        el.classList.remove('bg-slate-50', 'border-slate-200', 'text-slate-600');
+                        el.classList.add('bg-indigo-100', 'border-indigo-300', 'text-indigo-700', 'font-bold');
+                    } else {
+                        el.classList.remove('bg-indigo-100', 'border-indigo-300', 'text-indigo-700', 'font-bold');
+                        el.classList.add('bg-slate-50', 'border-slate-200', 'text-slate-600');
+                    }
+                }
+            });
+        }
+
+        // Filter After School Content Display
+        function filterPermissionDisplay() {
+            const userPerms = userPermissions.afterSchool || [];
+            const hasMaster = userPerms.includes('master');
+            const hasTeacher = userPerms.includes('teacher');
+            
+            const partnerCard = document.querySelector('[onclick="openModal(\'after-school-partners\')"]');
+            const scheduleCard = document.querySelector('[onclick="openModal(\'after-school-schedule\')"]');
+            const curriculumCard = document.querySelector('[onclick="openModal(\'after-school-curriculum\')"]');
+            
+            if (permissionViewMode === 'master') {
+                if (partnerCard) partnerCard.style.display = hasMaster ? '' : 'none';
+                if (scheduleCard) scheduleCard.style.display = hasMaster ? '' : 'none';
+                if (curriculumCard) curriculumCard.style.display = hasMaster ? '' : 'none';
+            } else if (permissionViewMode === 'teacher') {
+                if (partnerCard) partnerCard.style.display = hasTeacher ? '' : 'none';
+                if (scheduleCard) scheduleCard.style.display = hasTeacher ? '' : 'none';
+                if (curriculumCard) curriculumCard.style.display = hasTeacher ? '' : 'none';
+            } else {
+                if (partnerCard) partnerCard.style.display = '';
+                if (scheduleCard) scheduleCard.style.display = '';
+                if (curriculumCard) curriculumCard.style.display = '';
+            }
+        }
+
+        // Switch to Role View
+        function switchToRoleView(role) {
+            if (role === 'master-teacher') switchHqRole('master-teacher');
+            else if (role === 'hr') switchHqRole('hr');
+            else if (role === 'accounting') switchHqRole('accounting');
+        }
+
+        // Function to update menu items in sidebar for collapsed state
+        function updateSidebarMenuCollapsed(role) {
+            const menuContainer = document.getElementById('sidebar-menu');
+            if (!menuContainer) return;
+            
+            menuContainer.innerHTML = '';
+            const config = roleConfig[role];
+            if (!config || !config.menu) return;
+            
+            config.menu.forEach((item) => {
+                const link = document.createElement('a');
+                link.onclick = item.action;
+                link.className = 'p-3 rounded-lg hover:bg-indigo-800 transition flex items-center justify-center relative group';
+                link.title = item.label;
+                
+                const icon = document.createElement('i');
+                icon.setAttribute('data-lucide', item.icon);
+                icon.className = 'w-5 h-5';
+                
+                link.appendChild(icon);
+                
+                // Tooltip for collapsed menu
+                const tooltip = document.createElement('span');
+                tooltip.className = 'absolute left-full ml-2 bg-slate-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap hidden group-hover:block z-50';
+                tooltip.textContent = item.label;
+                link.appendChild(tooltip);
+                
+                menuContainer.appendChild(link);
+            });
+        }
     </script>
 </body>
 </html>
