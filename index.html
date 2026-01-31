@@ -1,0 +1,2171 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Talent System - Interactive Mockup V6</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 text-slate-800 h-screen overflow-hidden flex">
+
+    <!-- ==================== SIDEBAR (DESKTOP) ==================== -->
+    <aside class="bg-indigo-900 text-white flex-col hidden md:flex shadow-xl transition-all duration-300" id="sidebar">
+        <div class="p-6 flex items-center gap-3 border-b border-indigo-800 sidebar-logo" onclick="goToHighestRoleDashboard()" title="กลับไปที่ Dashboard หลัก">
+            <div class="w-10 h-10 bg-orange-400 rounded-lg flex items-center justify-center text-xl font-bold shadow-lg text-white flex-shrink-0">M</div>
+            <div class="sidebar-text">
+                <h1 class="font-bold text-lg leading-tight">Math Talent</h1>
+                <p class="text-xs text-indigo-300">System by Dr.Ying</p>
+            </div>
+            <button onclick="toggleSidebarCollapse(event)" class="sidebar-toggle-btn p-1" title="ซ่อน/แสดง Sidebar">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            </button>
+        </div>
+
+        <div class="p-4 border-b border-indigo-800">
+            <div class="flex items-center gap-3" onclick="toggleTodoSidebar()" style="cursor: pointer;">
+                <div class="w-8 h-8 rounded-full bg-indigo-700 flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="bell" class="w-4 h-4"></i>
+                </div>
+                <div class="sidebar-text flex-1">
+                    <p class="text-xs text-indigo-300">คุณมี</p>
+                    <p class="text-sm font-bold" id="todo-count">5 งานที่ต้องทำ</p>
+                </div>
+                <span class="notification-badge">5</span>
+            </div>
+        </div>
+
+        <nav class="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar" id="sidebar-menu">
+            <!-- Dynamic Menu จะถูกสร้างจาก JavaScript -->
+        </nav>
+
+        <div class="p-4 bg-indigo-950 border-t border-indigo-800">
+            <div class="flex items-center gap-3 cursor-pointer hover:bg-indigo-900 p-2 rounded-lg transition" onclick="toggleIdCardModal()">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Gigi" alt="User" class="w-10 h-10 rounded-full bg-indigo-200 flex-shrink-0" id="sidebar-avatar">
+                <div class="sidebar-text flex-1 min-w-0">
+                    <p class="text-sm font-medium truncate" id="user-name">Gigi The Admin</p>
+                    <p class="text-xs text-indigo-400 truncate" id="user-role">Staff ID: MT-888</p>
+                </div>
+            </div>
+            <button onclick="openQRCheckIn()" class="w-full mt-3 py-2 bg-indigo-800 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition">
+                <i data-lucide="qr-code" class="w-4 h-4 flex-shrink-0"></i> <span class="sidebar-text">QR Check-in</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- ==================== MOBILE MENU ==================== -->
+    <div class="mobile-menu fixed inset-0 z-40 md:hidden bg-white flex flex-col" id="mobile-menu">
+        <div class="p-6 flex items-center justify-between border-b">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-orange-400 rounded-lg flex items-center justify-center text-xl font-bold shadow-lg text-white">M</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Math Talent</h1>
+                    <p class="text-xs text-slate-500">System by Dr.Ying</p>
+                </div>
+            </div>
+            <button onclick="toggleMobileMenu()" class="p-2 rounded-lg hover:bg-slate-100">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <div class="p-4 border-b">
+            <div class="flex items-center gap-3" onclick="toggleTodoSidebar()" style="cursor: pointer;">
+                <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                    <i data-lucide="bell" class="w-4 h-4"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs text-slate-500">คุณมี</p>
+                    <p class="text-sm font-bold" id="mobile-todo-count">5 งานที่ต้องทำ</p>
+                </div>
+                <span class="notification-badge bg-red-500">5</span>
+            </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-4 custom-scrollbar" id="mobile-menu-container">
+            <!-- Dynamic Mobile Menu -->
+        </div>
+
+        <div class="p-4 border-t">
+            <div class="flex items-center gap-3">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Gigi" alt="User" class="w-10 h-10 rounded-full bg-indigo-200">
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium truncate" id="mobile-user-name">Gigi The Admin</p>
+                    <p class="text-xs text-slate-500 truncate" id="mobile-user-role">Staff ID: MT-888</p>
+                </div>
+                <button onclick="toggleIdCardModal()" class="p-2 rounded-lg hover:bg-slate-100">
+                    <i data-lucide="qr-code" class="w-5 h-5 text-orange-500"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        
+        <header class="h-16 bg-white border-b flex items-center justify-between px-6 shadow-sm z-10">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleMobileMenu()" class="md:hidden text-slate-500 hover:text-indigo-900 p-2 rounded-lg hover:bg-slate-100">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <h2 class="text-xl font-bold text-indigo-900" id="page-title">Dashboard</h2>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <!-- HQ Role Tabs (แสดงเมื่ออยู่ในโหมด HQ) -->
+                <div id="hq-role-tabs" class="hidden flex items-center gap-1 bg-slate-100 rounded-lg p-1 overflow-x-auto">
+                    <button onclick="switchHqRole('super-admin')" class="hq-role-tab active whitespace-nowrap text-xs md:text-sm" id="tab-hq-super-admin">Super Admin</button>
+                    <button onclick="switchHqRole('master-teacher')" class="hq-role-tab whitespace-nowrap text-xs md:text-sm" id="tab-hq-master-teacher">Master Teacher</button>
+                    <button onclick="switchHqRole('hr')" class="hq-role-tab whitespace-nowrap text-xs md:text-sm" id="tab-hq-hr">HR</button>
+                    <button onclick="switchHqRole('accounting')" class="hq-role-tab whitespace-nowrap text-xs md:text-sm" id="tab-hq-accounting">บัญชี</button>
+                </div>
+
+                <!-- Branch Role Tabs (แสดงเมื่ออยู่ในโหมด Branch) -->
+                <div id="branch-role-tabs" class="hidden flex items-center gap-1 bg-slate-100 rounded-lg p-1 overflow-x-auto">
+                    <button onclick="switchBranchRole('executive')" class="branch-role-tab active whitespace-nowrap text-xs md:text-sm" id="tab-branch-executive">Executive</button>
+                    <button onclick="switchBranchRole('admin')" class="branch-role-tab whitespace-nowrap text-xs md:text-sm" id="tab-branch-admin">Admin</button>
+                    <button onclick="switchBranchRole('teacher')" class="branch-role-tab whitespace-nowrap text-xs md:text-sm" id="tab-branch-teacher">Teacher</button>
+                </div>
+
+                <!-- Role Switcher -->
+                <div class="flex items-center gap-2 bg-slate-50 rounded-full px-2 md:px-3 py-1 border border-slate-200">
+                    <span class="hidden md:inline text-[10px] font-bold text-slate-400 uppercase tracking-wider">Mode:</span>
+                    <select id="role-switcher-header" onchange="switchMainRole(this.value)" class="bg-transparent text-xs md:text-sm font-semibold text-indigo-600 outline-none cursor-pointer">
+                        <option value="hq">HQ / ผู้บริหาร</option>
+                        <option value="branch">สาขา</option>
+                        <option value="parent">ผู้ปกครอง / นักเรียน</option>
+                    </select>
+                </div>
+
+                <!-- Notification Bell -->
+                <button class="relative p-2 text-slate-400 hover:text-indigo-600 transition" onclick="toggleNotificationPanel()">
+                    <i data-lucide="bell" class="w-5 h-5"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+
+                <!-- Logout Button -->
+                <button class="p-2 text-slate-400 hover:text-red-500 transition" onclick="logout()">
+                    <i data-lucide="log-out" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Notification Panel -->
+        <div id="notification-panel" class="absolute right-4 top-20 w-80 bg-white rounded-2xl shadow-xl border border-slate-200 z-50 hide">
+            <div class="p-4 border-b">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">การแจ้งเตือน (3)</h3>
+                    <button onclick="toggleNotificationPanel()" class="text-slate-400 hover:text-slate-600">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="max-h-96 overflow-y-auto">
+                <div class="p-4 border-b hover:bg-slate-50 cursor-pointer">
+                    <div class="flex gap-3">
+                        <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                            <i data-lucide="clipboard-check" class="w-4 h-4 text-green-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium">มีรายงานการสอนใหม่จากครูเจน</p>
+                            <p class="text-xs text-slate-500">2 นาทีที่แล้ว</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 border-b hover:bg-slate-50 cursor-pointer">
+                    <div class="flex gap-3">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                            <i data-lucide="credit-card" class="w-4 h-4 text-blue-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium">คอร์สของน้องภูมิใกล้หมดแล้ว</p>
+                            <p class="text-xs text-slate-500">1 ชั่วโมงที่แล้ว</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 hover:bg-slate-50 cursor-pointer">
+                    <div class="flex gap-3">
+                        <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center">
+                            <i data-lucide="calendar" class="w-4 h-4 text-yellow-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium">คุณมีนัดทดลองเรียนวันพรุ่งนี้ 10:00 น.</p>
+                            <p class="text-xs text-slate-500">3 ชั่วโมงที่แล้ว</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-3 border-t text-center">
+                <button class="text-sm text-indigo-600 font-medium hover:text-indigo-800">ดูทั้งหมด</button>
+            </div>
+        </div>
+
+        <!-- To-do List Sidebar -->
+        <div id="todo-sidebar" class="absolute left-4 top-20 w-72 bg-white rounded-2xl shadow-xl border border-slate-200 z-50 hide">
+            <div class="p-4 border-b">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">รายการที่ต้องทำ (5)</h3>
+                    <button onclick="toggleTodoSidebar()" class="text-slate-400 hover:text-slate-600">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-4 space-y-3">
+                <div class="todo-item p-3 bg-red-50 rounded-xl border border-red-100 cursor-pointer">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-slate-800">ส่งรายงานการสอน (คณิต Level 2)</p>
+                            <p class="text-xs text-slate-500 mt-1">คาบ 10:00 - 11:30</p>
+                        </div>
+                        <i data-lucide="alert-circle" class="w-5 h-5 text-red-500 ml-2"></i>
+                    </div>
+                </div>
+                <div class="todo-item p-3 bg-yellow-50 rounded-xl border border-yellow-100 cursor-pointer">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-slate-800">ตามยอดชำระคอร์สจากผู้ปกครอง</p>
+                            <p class="text-xs text-slate-500 mt-1">3 รายการรอดำเนินการ</p>
+                        </div>
+                        <i data-lucide="clock" class="w-5 h-5 text-yellow-500 ml-2"></i>
+                    </div>
+                </div>
+                <div class="todo-item p-3 bg-blue-50 rounded-xl border border-blue-100 cursor-pointer">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-slate-800">ตรวจสอบ VDO Training</p>
+                            <p class="text-xs text-slate-500 mt-1">สำหรับครูใหม่ 2 คน</p>
+                        </div>
+                        <i data-lucide="video" class="w-5 h-5 text-blue-500 ml-2"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="p-3 border-t">
+                <button onclick="toggleTodoSidebar()" class="w-full py-2 bg-indigo-50 text-indigo-600 rounded-lg text-sm font-medium hover:bg-indigo-100">ปิดรายการ</button>
+            </div>
+        </div>
+
+        <!-- Main Content Container -->
+        <div class="flex-1 overflow-y-auto p-4 md:p-6 relative custom-scrollbar" id="main-container">
+            
+            <!-- ==================== HQ VIEW ==================== -->
+            <div id="view-hq" class="role-view fade-in">
+                <!-- HQ Super Admin Dashboard -->
+                <div id="hq-super-admin-view" class="hq-role-view">
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-2xl font-bold text-slate-800">Super Admin Dashboard</h2>
+                            <p class="text-slate-600">สิทธิ์การเข้าถึงทั้งหมด</p>
+                        </div>
+                    </div>
+
+                    <!-- Carousel Banner -->
+                    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-sm border border-indigo-200 p-6 mb-8 overflow-hidden">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <h3 class="text-2xl font-bold text-white mb-2" id="carousel-title">ยินดีต้อนรับกลับมา Dr.Ying</h3>
+                                <p class="text-indigo-100 mb-4" id="carousel-description">จัดการระบบการศึกษา Math Talent ได้อย่างมีประสิทธิภาพ</p>
+                                <button onclick="nextCarousel()" class="px-6 py-2 bg-white text-indigo-600 rounded-lg font-bold hover:bg-slate-100">ดูข้อมูลเพิ่มเติม →</button>
+                            </div>
+                            <div class="hidden md:block text-white opacity-20 text-6xl">
+                                <i data-lucide="bar-chart-2" class="w-24 h-24"></i>
+                            </div>
+                        </div>
+                        <!-- Carousel Indicators -->
+                        <div class="flex gap-2 mt-4">
+                            <button onclick="setCarouselSlide(0)" class="w-2 h-2 rounded-full bg-white transition" id="carousel-dot-0"></button>
+                            <button onclick="setCarouselSlide(1)" class="w-2 h-2 rounded-full bg-indigo-300 transition" id="carousel-dot-1"></button>
+                            <button onclick="setCarouselSlide(2)" class="w-2 h-2 rounded-full bg-indigo-300 transition" id="carousel-dot-2"></button>
+                        </div>
+                    </div>
+
+                    <!-- Super Admin Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 mb-8">
+                        <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 card-mobile">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">รายได้รวม (เดือนนี้)</p>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-indigo-900 mt-1">฿12.5M</h3>
+                                    <p class="text-green-600 text-xs mt-1">↑ 8.5% จากเดือนที่แล้ว</p>
+                                </div>
+                                <div class="p-3 bg-indigo-50 rounded-xl text-indigo-600"><i data-lucide="wallet"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 card-mobile">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">นักเรียนทั้งหมด</p>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-indigo-900 mt-1">2,840</h3>
+                                    <p class="text-slate-500 text-xs mt-1">จาก 12 สาขา</p>
+                                </div>
+                                <div class="p-3 bg-orange-50 rounded-xl text-orange-500"><i data-lucide="users"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 card-mobile">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">ครูทั้งหมด</p>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-indigo-900 mt-1">156</h3>
+                                    <p class="text-slate-500 text-xs mt-1">ครูประจำ + ครูช่วยสอน</p>
+                                </div>
+                                <div class="p-3 bg-green-50 rounded-xl text-green-500"><i data-lucide="graduation-cap"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 card-mobile">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">คอร์สทั้งหมด</p>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-indigo-900 mt-1">24</h3>
+                                    <p class="text-slate-500 text-xs mt-1">คณิต 16 วิทย์ 8</p>
+                                </div>
+                                <div class="p-3 bg-purple-50 rounded-xl text-purple-500"><i data-lucide="book-open"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Master Curriculum Management -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-6">
+                        <h3 class="font-bold text-lg text-slate-800 mb-4">Master Curriculum Management</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="p-4 bg-indigo-50 rounded-xl border border-indigo-100">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                                        <i data-lucide="book-open" class="w-5 h-5 text-indigo-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold">Math Visual</p>
+                                        <p class="text-xs text-slate-600">ระดับ 1-6</p>
+                                    </div>
+                                </div>
+                                <button onclick="openModal('manage-math-curriculum')" class="w-full py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">จัดการเนื้อหา</button>
+                            </div>
+                            <div class="p-4 bg-orange-50 rounded-xl border border-orange-100">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                                        <i data-lucide="flask" class="w-5 h-5 text-orange-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold">Science Explorer</p>
+                                        <p class="text-xs text-slate-600">ระดับ 1-4</p>
+                                    </div>
+                                </div>
+                                <button onclick="openModal('manage-science-curriculum')" class="w-full py-2 bg-orange-500 text-white rounded-lg text-sm font-medium hover:bg-orange-600">จัดการเนื้อหา</button>
+                            </div>
+                            <div class="p-4 bg-green-50 rounded-xl border border-green-100">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <i data-lucide="plus-circle" class="w-5 h-5 text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold">เพิ่มหลักสูตรใหม่</p>
+                                        <p class="text-xs text-slate-600">(ฟินแลนด์สไตล์)</p>
+                                    </div>
+                                </div>
+                                <button onclick="openModal('create-curriculum')" class="w-full py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700">สร้างหลักสูตร</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Management -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                            <h3 class="font-bold text-lg text-slate-800 mb-4">System Settings</h3>
+                            <div class="space-y-4">
+                                <div class="p-4 bg-indigo-50 rounded-xl border border-indigo-100 cursor-pointer hover:bg-indigo-100" onclick="openModal('system-settings')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="settings" class="w-5 h-5 text-indigo-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">การตั้งค่าระบบ</p>
+                                                <p class="text-sm text-slate-600">ผู้ใช้งาน, สิทธิ์, การแจ้งเตือน</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-indigo-400"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-purple-50 rounded-xl border border-purple-100 cursor-pointer hover:bg-purple-100" onclick="openModal('role-permissions')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="shield" class="w-5 h-5 text-purple-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">จัดการสิทธิ์ Role</p>
+                                                <p class="text-sm text-slate-600">After School Program และอื่นๆ</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-purple-400"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-green-50 rounded-xl border border-green-100 cursor-pointer hover:bg-green-100" onclick="openModal('backup-system')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="database" class="w-5 h-5 text-green-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">Backup & Restore</p>
+                                                <p class="text-sm text-slate-600">สำรองข้อมูลระบบ</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-green-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                            <h3 class="font-bold text-lg text-slate-800 mb-4">Reports & Analytics</h3>
+                            <div class="space-y-4">
+                                <div class="p-4 bg-blue-50 rounded-xl border border-blue-100 cursor-pointer hover:bg-blue-100" onclick="openModal('analytics-report')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="bar-chart-3" class="w-5 h-5 text-blue-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">รายงานวิเคราะห์</p>
+                                                <p class="text-sm text-slate-600">ประสิทธิภาพสาขา</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-blue-400"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-purple-50 rounded-xl border border-purple-100 cursor-pointer hover:bg-purple-100" onclick="openModal('audit-log')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="shield-check" class="w-5 h-5 text-purple-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">Audit Log</p>
+                                                <p class="text-sm text-slate-600">ประวัติการใช้งานระบบ</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-purple-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                            <div class="flex flex-col gap-4">
+                                <div>
+                                    <h3 class="font-bold text-lg text-slate-800">After School Program</h3>
+                                    <p class="text-xs text-slate-600 mt-2">สิทธิ์ของคุณ: <span id="current-permissions" class="font-bold">Master</span></p>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <button onclick="setPermissionView('master')" class="px-4 py-2 rounded-lg text-sm font-medium transition" id="perm-btn-master">
+                                        <i data-lucide="check-circle2" class="w-4 h-4 inline mr-1"></i> Master
+                                    </button>
+                                    <button onclick="setPermissionView('teacher')" class="px-4 py-2 rounded-lg text-sm font-medium transition" id="perm-btn-teacher">
+                                        <i data-lucide="eye" class="w-4 h-4 inline mr-1"></i> Teacher
+                                    </button>
+                                    <button onclick="setPermissionView('all')" class="px-4 py-2 rounded-lg text-sm font-medium transition" id="perm-btn-all">
+                                        <i data-lucide="layout" class="w-4 h-4 inline mr-1"></i> ทั้งหมด
+                                    </button>
+                                    <div class="ml-auto">
+                                        <button onclick="openModal('role-permissions')" class="px-3 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">
+                                            <i data-lucide="settings" class="w-4 h-4 inline mr-1"></i> จัดการสิทธิ์
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-4 mt-6" id="after-school-content">
+                                <div class="p-4 bg-pink-50 rounded-xl border border-pink-100 cursor-pointer hover:bg-pink-100" onclick="openModal('after-school-partners')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="school" class="w-5 h-5 text-pink-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">โรงเรียนพันธมิตร</p>
+                                                <p class="text-sm text-slate-600">8 โรงเรียน</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-pink-400"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-cyan-50 rounded-xl border border-cyan-100 cursor-pointer hover:bg-cyan-100" onclick="openModal('after-school-schedule')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="calendar-days" class="w-5 h-5 text-cyan-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">ตารางเรียน & คลาส</p>
+                                                <p class="text-sm text-slate-600">24 คลาส</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-cyan-400"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-rose-50 rounded-xl border border-rose-100 cursor-pointer hover:bg-rose-100" onclick="openModal('after-school-curriculum')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-rose-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="book-marked" class="w-5 h-5 text-rose-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">เอกสาร & หลักสูตร</p>
+                                                <p class="text-sm text-slate-600">ทำการแก้ไข / ดู / ดาวน์โหลด</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-rose-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- View Other Roles -->
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                            <h3 class="font-bold text-lg text-slate-800 mb-4">เข้าดูรายละเอียดจากมุมมอง</h3>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <label class="inline-flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100 transition">
+                                    <input type="radio" name="role-view" onchange="switchToRoleView('master-teacher')" class="w-4 h-4">
+                                    <span class="text-sm font-medium">Master Teacher</span>
+                                </label>
+                                <label class="inline-flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100 transition">
+                                    <input type="radio" name="role-view" onchange="switchToRoleView('hr')" class="w-4 h-4">
+                                    <span class="text-sm font-medium">HR</span>
+                                </label>
+                                <label class="inline-flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100 transition">
+                                    <input type="radio" name="role-view" onchange="switchToRoleView('accounting')" class="w-4 h-4">
+                                    <span class="text-sm font-medium">บัญชี</span>
+                                </label>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="role-view-cards">
+                                <div class="p-4 bg-blue-50 rounded-xl border border-blue-100 cursor-pointer hover:bg-blue-100" onclick="switchHqRole('master-teacher')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="book-open" class="w-5 h-5 text-blue-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">Master Teacher</p>
+                                                <p class="text-sm text-slate-600">หลักสูตร VDO</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-blue-400"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-green-50 rounded-xl border border-green-100 cursor-pointer hover:bg-green-100" onclick="switchHqRole('hr')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="users" class="w-5 h-5 text-green-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">HR Manager</p>
+                                                <p class="text-sm text-slate-600">พนักงาน OT ค่าจ้าง</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-green-400"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-orange-50 rounded-xl border border-orange-100 cursor-pointer hover:bg-orange-100" onclick="switchHqRole('accounting')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="receipt" class="w-5 h-5 text-orange-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">Accountant</p>
+                                                <p class="text-sm text-slate-600">การเงิน รายรับ ใบเสร็จ</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-orange-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HQ Master Teacher View -->
+                <div id="hq-master-teacher-view" class="hq-role-view hide">
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-2xl font-bold text-slate-800">Master Teacher Dashboard</h2>
+                            <p class="text-slate-600">จัดการหลักสูตรและฝึกอบรม</p>
+                        </div>
+                    </div>
+
+                    <!-- Curriculum Management -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-lg text-slate-800">จัดการเอกสารหลักสูตร</h3>
+                            <button onclick="openModal('upload-curriculum')" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700">
+                                <i data-lucide="upload" class="w-4 h-4 inline mr-2"></i> อัปโหลดเอกสาร
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="p-6 bg-indigo-50 rounded-2xl border border-indigo-100">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                                        <i data-lucide="file-text" class="w-6 h-6 text-indigo-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-lg">เอกสารคณิตศาสตร์</h3>
+                                        <p class="text-sm text-slate-600">24 ไฟล์ • 5 ระดับ</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="p-3 bg-white rounded-lg border flex justify-between items-center">
+                                        <div>
+                                            <p class="font-medium">แผนการสอน Math Visual L1</p>
+                                            <p class="text-xs text-slate-500">อัปเดตเมื่อ 12/04/2026</p>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <button onclick="viewDocument('math-visual-l1')" class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg">
+                                                <i data-lucide="eye" class="w-4 h-4"></i>
+                                            </button>
+                                            <button onclick="editDocument('math-visual-l1')" class="p-2 text-green-600 hover:bg-green-50 rounded-lg">
+                                                <i data-lucide="edit" class="w-4 h-4"></i>
+                                            </button>
+                                            <button onclick="printDocument('math-visual-l1')" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg">
+                                                <i data-lucide="printer" class="w-4 h-4"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-6 bg-green-50 rounded-2xl border border-green-100">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                        <i data-lucide="video" class="w-6 h-6 text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-lg">VDO Training</h3>
+                                        <p class="text-sm text-slate-600">32 ไฟล์ • YouTube Integration</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="p-3 bg-white rounded-lg border flex justify-between items-center">
+                                        <div>
+                                            <p class="font-medium">VDO การสอนแบบฟินแลนด์</p>
+                                            <p class="text-xs text-slate-500">YouTube • 25 นาที</p>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <button onclick="viewVideo('finland-teaching')" class="p-2 text-green-600 hover:bg-green-50 rounded-lg">
+                                                <i data-lucide="play" class="w-4 h-4"></i>
+                                            </button>
+                                            <button onclick="editVideo('finland-teaching')" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg">
+                                                <i data-lucide="edit" class="w-4 h-4"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="p-3 bg-white rounded-lg border flex justify-between items-center">
+                                        <div>
+                                            <p class="font-medium">เทคนิคการสอนคิดวิเคราะห์</p>
+                                            <p class="text-xs text-slate-500">YouTube • 18 นาที</p>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <button onclick="viewVideo('critical-thinking')" class="p-2 text-green-600 hover:bg-green-50 rounded-lg">
+                                                <i data-lucide="play" class="w-4 h-4"></i>
+                                            </button>
+                                            <button onclick="editVideo('critical-thinking')" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg">
+                                                <i data-lucide="edit" class="w-4 h-4"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button onclick="openModal('upload-video')" class="w-full mt-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700">
+                                    <i data-lucide="plus" class="w-4 h-4 inline mr-2"></i> เพิ่ม VDO Training
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- YouTube Integration -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                        <h3 class="font-bold text-lg text-slate-800 mb-4">YouTube Integration</h3>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-slate-50 rounded-xl border">
+                                <div class="flex items-start gap-4">
+                                    <div class="flex-1">
+                                        <p class="font-medium">เพิ่มวิดีโอจาก YouTube</p>
+                                        <p class="text-sm text-slate-600 mb-3">วางลิงก์ YouTube เพื่อเพิ่มในระบบ Training</p>
+                                        <div class="flex gap-2">
+                                            <input type="text" class="flex-1 p-2 border rounded-lg" placeholder="https://youtube.com/watch?v=..." value="https://youtube.com/watch?v=PB38VWJponY">
+                                            <button onclick="addYouTubeVideo()" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700">
+                                                <i data-lucide="youtube" class="w-4 h-4 inline mr-2"></i> เพิ่มวิดีโอ
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                                        <i data-lucide="youtube" class="w-6 h-6 text-red-600"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HQ HR View -->
+                <div id="hq-hr-view" class="hq-role-view hide">
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-2xl font-bold text-slate-800">HR Dashboard</h2>
+                            <p class="text-slate-600">จัดการบุคลากร คิดชั่วโมงทำงาน คำนวณเงินเดือน</p>
+                        </div>
+                    </div>
+
+                    <!-- HR Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">พนักงานทั้งหมด</p>
+                                    <h3 class="text-3xl font-bold text-indigo-900 mt-1">168</h3>
+                                    <p class="text-slate-500 text-xs mt-1">ครู 156, แอดมิน 12</p>
+                                </div>
+                                <div class="p-3 bg-indigo-50 rounded-xl text-indigo-600"><i data-lucide="users"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">ชั่วโมงสอนรวม</p>
+                                    <h3 class="text-3xl font-bold text-indigo-900 mt-1">3,240</h3>
+                                    <p class="text-slate-500 text-xs mt-1">ชั่วโมง/เดือน</p>
+                                </div>
+                                <div class="p-3 bg-green-50 rounded-xl text-green-500"><i data-lucide="clock"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">เงินเดือนรวม</p>
+                                    <h3 class="text-3xl font-bold text-indigo-900 mt-1">฿2.85M</h3>
+                                    <p class="text-slate-500 text-xs mt-1">ค่าสอน + เงินเดือน</p>
+                                </div>
+                                <div class="p-3 bg-orange-50 rounded-xl text-orange-500"><i data-lucide="credit-card"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Employee Management -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-lg text-slate-800">จัดการพนักงาน</h3>
+                            <button onclick="openModal('add-employee')" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700">
+                                <i data-lucide="user-plus" class="w-4 h-4 inline mr-2"></i> เพิ่มพนักงาน
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th class="p-3 text-left">ชื่อ-นามสกุล</th>
+                                        <th class="p-3 text-left">ตำแหน่ง</th>
+                                        <th class="p-3 text-left">ชั่วโมง/สัปดาห์</th>
+                                        <th class="p-3 text-left">OT</th>
+                                        <th class="p-3 text-left">เงินเดือน</th>
+                                        <th class="p-3 text-left">สถานะ</th>
+                                        <th class="p-3 text-left">การจัดการ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b hover:bg-slate-50">
+                                        <td class="p-3">
+                                            <div class="flex items-center gap-3">
+                                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Teacher1" class="w-8 h-8 rounded-full">
+                                                <div>
+                                                    <p class="font-medium">ครูสมศรี</p>
+                                                    <p class="text-xs text-slate-500">BR-T-009</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="p-3">Teacher</td>
+                                        <td class="p-3"><span class="font-bold">38</span> ชม</td>
+                                        <td class="p-3"><span class="px-2 py-1 bg-orange-100 text-orange-700 rounded text-xs font-bold">+1 ชม</span></td>
+                                        <td class="p-3 font-medium">฿28,000</td>
+                                        <td class="p-3"><span class="role-badge bg-green-100 text-green-800">Active</span></td>
+                                        <td class="p-3">
+                                            <div class="flex gap-1">
+                                                <button onclick="viewEmployee('BR-T-009')" class="p-1 text-blue-600 hover:bg-blue-50 rounded" title="ดูรายละเอียด">
+                                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                                </button>
+                                                <button onclick="calculateSalary('BR-T-009')" class="p-1 text-green-600 hover:bg-green-50 rounded" title="คำนวณเงินเดือน">
+                                                    <i data-lucide="calculator" class="w-4 h-4"></i>
+                                                </button>
+                                                <button onclick="viewTeachingHours('BR-T-009')" class="p-1 text-purple-600 hover:bg-purple-50 rounded" title="ดูชั่วโมงสอน">
+                                                    <i data-lucide="clock" class="w-4 h-4"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b hover:bg-slate-50">
+                                        <td class="p-3">
+                                            <div class="flex items-center gap-3">
+                                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Teacher2" class="w-8 h-8 rounded-full">
+                                                <div>
+                                                    <p class="font-medium">ครูภูมิ</p>
+                                                    <p class="text-xs text-slate-500">BR-T-010</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="p-3">Teacher</td>
+                                        <td class="p-3"><span class="font-bold">42</span> ชม</td>
+                                        <td class="p-3"><span class="px-2 py-1 bg-orange-100 text-orange-700 rounded text-xs font-bold">+5 ชม</span></td>
+                                        <td class="p-3 font-medium">฿29,500</td>
+                                        <td class="p-3"><span class="role-badge bg-green-100 text-green-800">Active</span></td>
+                                        <td class="p-3">
+                                            <div class="flex gap-1">
+                                                <button onclick="viewEmployee('BR-T-010')" class="p-1 text-blue-600 hover:bg-blue-50 rounded" title="ดูรายละเอียด">
+                                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                                </button>
+                                                <button onclick="calculateSalary('BR-T-010')" class="p-1 text-green-600 hover:bg-green-50 rounded" title="คำนวณเงินเดือน">
+                                                    <i data-lucide="calculator" class="w-4 h-4"></i>
+                                                </button>
+                                                <button onclick="viewTeachingHours('BR-T-010')" class="p-1 text-purple-600 hover:bg-purple-50 rounded" title="ดูชั่วโมงสอน">
+                                                    <i data-lucide="clock" class="w-4 h-4"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b hover:bg-slate-50">
+                                        <td class="p-3">
+                                            <div class="flex items-center gap-3">
+                                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" class="w-8 h-8 rounded-full">
+                                                <div>
+                                                    <p class="font-medium">ครูนัสตูน</p>
+                                                    <p class="text-xs text-slate-500">BR-M-003</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="p-3">Branch Manager</td>
+                                        <td class="p-3"><span class="font-bold">25</span> ชม</td>
+                                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">-</span></td>
+                                        <td class="p-3 font-medium">฿35,000</td>
+                                        <td class="p-3"><span class="role-badge bg-green-100 text-green-800">Active</span></td>
+                                        <td class="p-3">
+                                            <div class="flex gap-1">
+                                                <button onclick="viewEmployee('BR-M-003')" class="p-1 text-blue-600 hover:bg-blue-50 rounded" title="ดูรายละเอียด">
+                                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                                </button>
+                                                <button onclick="calculateSalary('BR-M-003')" class="p-1 text-green-600 hover:bg-green-50 rounded" title="คำนวณเงินเดือน">
+                                                    <i data-lucide="calculator" class="w-4 h-4"></i>
+                                                </button>
+                                                <button onclick="viewTeachingHours('BR-M-003')" class="p-1 text-purple-600 hover:bg-purple-50 rounded" title="ดูชั่วโมงสอน">
+                                                    <i data-lucide="clock" class="w-4 h-4"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Salary Calculation -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                        <h3 class="font-bold text-lg text-slate-800 mb-4">คำนวณเงินเดือน</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="p-4 bg-indigo-50 rounded-xl border border-indigo-100">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div>
+                                        <p class="font-medium">คำนวณเงินเดือนประจำเดือน</p>
+                                        <p class="text-sm text-slate-600">กำหนดจ่าย: 15/04/2026</p>
+                                    </div>
+                                    <i data-lucide="calculator" class="w-6 h-6 text-indigo-600"></i>
+                                </div>
+                                <button onclick="openModal('calculate-salary')" class="w-full py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">คำนวณเงินเดือน</button>
+                            </div>
+                            <div class="p-4 bg-green-50 rounded-xl border border-green-100">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div>
+                                        <p class="font-medium">บันทึกชั่วโมงสอน</p>
+                                        <p class="text-sm text-slate-600">ตรวจสอบและบันทึกชั่วโมงสอน</p>
+                                    </div>
+                                    <i data-lucide="clock" class="w-6 h-6 text-green-600"></i>
+                                </div>
+                                <button onclick="openModal('teaching-hours')" class="w-full py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700">บันทึกชั่วโมง</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HQ Accounting View -->
+                <div id="hq-accounting-view" class="hq-role-view hide">
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-2xl font-bold text-slate-800">Accounting Dashboard</h2>
+                            <p class="text-slate-600">จัดการการเงินทั้งหมด เช็ครายรับค่าคอร์สแต่ละสาขา</p>
+                        </div>
+                    </div>
+
+                    <!-- Accounting Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">รายได้รวม (เดือนนี้)</p>
+                                    <h3 class="text-3xl font-bold text-indigo-900 mt-1">฿12.5M</h3>
+                                    <p class="text-green-600 text-xs mt-1">↑ 8.5% จากเดือนที่แล้ว</p>
+                                </div>
+                                <div class="p-3 bg-green-50 rounded-xl text-green-500"><i data-lucide="trending-up"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">ค่าใช้จ่ายเดือนนี้</p>
+                                    <h3 class="text-3xl font-bold text-indigo-900 mt-1">฿4.2M</h3>
+                                    <p class="text-slate-500 text-xs mt-1">เงินเดือน 85%</p>
+                                </div>
+                                <div class="p-3 bg-red-50 rounded-xl text-red-500"><i data-lucide="trending-down"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">กำไรสุทธิ (เดือนนี้)</p>
+                                    <h3 class="text-3xl font-bold text-indigo-900 mt-1">฿8.3M</h3>
+                                    <p class="text-green-600 text-xs mt-1">↑ 12.5% จากเดือนที่แล้ว</p>
+                                </div>
+                                <div class="p-3 bg-blue-50 rounded-xl text-blue-500"><i data-lucide="dollar-sign"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Branch Revenue -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-6">
+                        <h3 class="font-bold text-lg text-slate-800 mb-4">รายรับค่าคอร์สแต่ละสาขา</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th class="p-3 text-left">สาขา</th>
+                                        <th class="p-3 text-left">นักเรียน</th>
+                                        <th class="p-3 text-left">รายรับ/เดือน</th>
+                                        <th class="p-3 text-left">เปรียบเทียบ</th>
+                                        <th class="p-3 text-left">การจัดการ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b hover:bg-slate-50">
+                                        <td class="p-3 font-medium">พระราม 9</td>
+                                        <td class="p-3">320 คน</td>
+                                        <td class="p-3 font-medium text-green-600">฿2,400,000</td>
+                                        <td class="p-3"><span class="role-badge bg-green-100 text-green-800">↑ 15%</span></td>
+                                        <td class="p-3">
+                                            <button onclick="viewBranchFinance('rama9')" class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded text-xs hover:bg-indigo-200">ดูรายละเอียด</button>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b hover:bg-slate-50">
+                                        <td class="p-3 font-medium">รัชดา</td>
+                                        <td class="p-3">280 คน</td>
+                                        <td class="p-3 font-medium text-green-600">฿1,900,000</td>
+                                        <td class="p-3"><span class="role-badge bg-green-100 text-green-800">↑ 8%</span></td>
+                                        <td class="p-3">
+                                            <button onclick="viewBranchFinance('rachada')" class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded text-xs hover:bg-indigo-200">ดูรายละเอียด</button>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="p-3 font-medium">พระราม 2</td>
+                                        <td class="p-3">245 คน</td>
+                                        <td class="p-3 font-medium text-green-600">฿1,800,000</td>
+                                        <td class="p-3"><span class="role-badge bg-green-100 text-green-800">↑ 12%</span></td>
+                                        <td class="p-3">
+                                            <button onclick="viewBranchFinance('rama2')" class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded text-xs hover:bg-indigo-200">ดูรายละเอียด</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Financial Reports -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                            <h3 class="font-bold text-lg text-slate-800 mb-4">รายงานการเงิน</h3>
+                            <div class="space-y-4">
+                                <div class="p-4 bg-blue-50 rounded-xl border border-blue-100 cursor-pointer hover:bg-blue-100" onclick="generateFinancialReport()">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="file-text" class="w-5 h-5 text-blue-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">รายงานรายได้-ค่าใช้จ่าย</p>
+                                                <p class="text-sm text-slate-600">ประจำเดือนเมษายน 2026</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="download" class="w-5 h-5 text-blue-400"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-green-50 rounded-xl border border-green-100 cursor-pointer hover:bg-green-100" onclick="generateTaxReport()">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="receipt" class="w-5 h-5 text-green-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">รายงานภาษีประจำเดือน</p>
+                                                <p class="text-sm text-slate-600">กำหนดส่ง: 30/04/2026</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="download" class="w-5 h-5 text-green-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                            <h3 class="font-bold text-lg text-slate-800 mb-4">การชำระเงิน</h3>
+                            <div class="space-y-4">
+                                <div class="p-4 bg-indigo-50 rounded-xl border border-indigo-100">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <div>
+                                            <p class="font-medium">ค่าสอนครูประจำเดือน</p>
+                                            <p class="text-sm text-slate-600">กำหนดจ่าย: 15/04/2026</p>
+                                        </div>
+                                        <i data-lucide="credit-card" class="w-6 h-6 text-indigo-600"></i>
+                                    </div>
+                                    <button onclick="openModal('process-payment')" class="w-full py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">ดำเนินการจ่าย</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== BRANCH VIEW ==================== -->
+            <div id="view-branch" class="role-view hide fade-in">
+                <!-- Branch Executive View -->
+                <div id="branch-executive-view" class="branch-role-view">
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-2xl font-bold text-slate-800">Branch Executive Dashboard</h2>
+                            <p class="text-slate-600">สาขาพระราม 9 • สิทธิ์การเข้าถึงทั้งหมด</p>
+                        </div>
+                    </div>
+
+                    <!-- Executive Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 mb-8">
+                        <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 card-mobile">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">รายได้สาขา (เดือนนี้)</p>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-indigo-900 mt-1">฿2.4M</h3>
+                                    <p class="text-green-600 text-xs mt-1">↑ 15% จากเดือนที่แล้ว</p>
+                                </div>
+                                <div class="p-3 bg-indigo-50 rounded-xl text-indigo-600"><i data-lucide="wallet"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 card-mobile">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">นักเรียนทั้งหมด</p>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-indigo-900 mt-1">320</h3>
+                                    <p class="text-slate-500 text-xs mt-1">24 ห้องเรียน</p>
+                                </div>
+                                <div class="p-3 bg-orange-50 rounded-xl text-orange-500"><i data-lucide="users"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 card-mobile">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">ครูทั้งหมด</p>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-indigo-900 mt-1">15</h3>
+                                    <p class="text-slate-500 text-xs mt-1">ครูประจำ 12, ครูช่วยสอน 3</p>
+                                </div>
+                                <div class="p-3 bg-green-50 rounded-xl text-green-500"><i data-lucide="graduation-cap"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 card-mobile">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">คอร์สที่เปิดสอน</p>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-indigo-900 mt-1">8</h3>
+                                    <p class="text-slate-500 text-xs mt-1">คณิต 5 วิทย์ 3</p>
+                                </div>
+                                <div class="p-3 bg-purple-50 rounded-xl text-purple-500"><i data-lucide="book-open"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Executive Management -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                            <h3 class="font-bold text-lg text-slate-800 mb-4">การจัดการสาขา</h3>
+                            <div class="space-y-4">
+                                <div class="p-4 bg-blue-50 rounded-xl border border-blue-100 cursor-pointer hover:bg-blue-100" onclick="openModal('branch-finance')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="credit-card" class="w-5 h-5 text-blue-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">การเงินสาขา</p>
+                                                <p class="text-sm text-slate-600">ตรวจสอบรายรับรายจ่าย</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-blue-400"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-green-50 rounded-xl border border-green-100 cursor-pointer hover:bg-green-100" onclick="openModal('branch-schedule')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="calendar" class="w-5 h-5 text-green-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">ตารางเรียนทั้งหมด</p>
+                                                <p class="text-sm text-slate-600">นักเรียนทั้งหมดในสาขา</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-green-400"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-purple-50 rounded-xl border border-purple-100 cursor-pointer hover:bg-purple-100" onclick="openModal('branch-training')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="video" class="w-5 h-5 text-purple-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">VDO Training</p>
+                                                <p class="text-sm text-slate-600">สำหรับครูในสาขา</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-purple-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                            <h3 class="font-bold text-lg text-slate-800 mb-4">รายงานและสถิติ</h3>
+                            <div class="space-y-4">
+                                <div class="p-4 bg-orange-50 rounded-xl border border-orange-100 cursor-pointer hover:bg-orange-100" onclick="openModal('branch-reports')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="bar-chart-3" class="w-5 h-5 text-orange-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">รายงานประสิทธิภาพ</p>
+                                                <p class="text-sm text-slate-600">ครูและนักเรียน</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-orange-400"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-red-50 rounded-xl border border-red-100 cursor-pointer hover:bg-red-100" onclick="openModal('payment-reports')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="receipt" class="w-5 h-5 text-red-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">รายงานการชำระเงิน</p>
+                                                <p class="text-sm text-slate-600">ใบเสร็จ/กำกับภาษี</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-red-400"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-indigo-50 rounded-xl border border-indigo-100 cursor-pointer hover:bg-indigo-100" onclick="openQRCheckIn()">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="qr-code" class="w-5 h-5 text-indigo-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">QR Check-in</p>
+                                                <p class="text-sm text-slate-600">สำหรับครูและนักเรียน</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-indigo-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Access Admin & Teacher Views -->
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                            <h3 class="font-bold text-lg text-slate-800 mb-4">เปิดดูรายละเอียดจากมุมมอง</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="p-4 bg-cyan-50 rounded-xl border border-cyan-100 cursor-pointer hover:bg-cyan-100" onclick="switchBranchRole('admin')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="shield-check" class="w-5 h-5 text-cyan-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">Admin View</p>
+                                                <p class="text-sm text-slate-600">การเงินและการชำระเงิน</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-cyan-400"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-green-50 rounded-xl border border-green-100 cursor-pointer hover:bg-green-100" onclick="switchBranchRole('teacher')">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                                <i data-lucide="graduation-cap" class="w-5 h-5 text-green-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium">Teacher View</p>
+                                                <p class="text-sm text-slate-600">ตารางสอนและนักเรียน</p>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-green-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Branch Admin View -->
+                <div id="branch-admin-view" class="branch-role-view hide">
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-2xl font-bold text-slate-800">Branch Admin Dashboard</h2>
+                            <p class="text-slate-600">สาขาพระราม 9 • การเงินสาขา ตารางเรียน การชำระเงิน</p>
+                        </div>
+                    </div>
+
+                    <!-- Admin Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">รายรับเดือนนี้</p>
+                                    <h3 class="text-3xl font-bold text-indigo-900 mt-1">฿2.4M</h3>
+                                    <p class="text-slate-500 text-xs mt-1">จาก 320 นักเรียน</p>
+                                </div>
+                                <div class="p-3 bg-green-50 rounded-xl text-green-500"><i data-lucide="trending-up"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">ค้างชำระ</p>
+                                    <h3 class="text-3xl font-bold text-indigo-900 mt-1">฿120,000</h3>
+                                    <p class="text-slate-500 text-xs mt-1">15 รายการ</p>
+                                </div>
+                                <div class="p-3 bg-red-50 rounded-xl text-red-500"><i data-lucide="alert-circle"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">นักเรียนใหม่</p>
+                                    <h3 class="text-3xl font-bold text-indigo-900 mt-1">18</h3>
+                                    <p class="text-slate-500 text-xs mt-1">เดือนเมษายน 2026</p>
+                                </div>
+                                <div class="p-3 bg-blue-50 rounded-xl text-blue-500"><i data-lucide="user-plus"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Branch Finance Management -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-lg text-slate-800">การเงินสาขา</h3>
+                            <button onclick="openModal('create-receipt')" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700">
+                                <i data-lucide="receipt" class="w-4 h-4 inline mr-2"></i> ออกใบเสร็จ
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div class="p-4 bg-green-50 rounded-xl border border-green-100">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div>
+                                        <p class="font-medium">ชำระเงินล่าสุด</p>
+                                        <p class="text-sm text-slate-600">12 รายการ วันนี้</p>
+                                    </div>
+                                    <i data-lucide="credit-card" class="w-6 h-6 text-green-600"></i>
+                                </div>
+                                <button onclick="openModal('recent-payments')" class="w-full py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700">ดูรายละเอียด</button>
+                            </div>
+                            <div class="p-4 bg-red-50 rounded-xl border border-red-100">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div>
+                                        <p class="font-medium">ค้างชำระ</p>
+                                        <p class="text-sm text-slate-600">15 รายการ • ฿120,000</p>
+                                    </div>
+                                    <i data-lucide="alert-triangle" class="w-6 h-6 text-red-600"></i>
+                                </div>
+                                <button onclick="sendPaymentReminders()" class="w-full py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700">ส่งการแจ้งเตือน</button>
+                            </div>
+                        </div>
+
+                        <!-- Tax Invoice -->
+                        <div class="p-4 bg-blue-50 rounded-xl border border-blue-100">
+                            <div class="flex justify-between items-center mb-2">
+                                <div>
+                                    <p class="font-medium">ออกใบเสร็จ/กำกับภาษี</p>
+                                    <p class="text-sm text-slate-600">สร้างใบเสร็จรับเงินและใบกำกับภาษี</p>
+                                </div>
+                                <i data-lucide="file-text" class="w-6 h-6 text-blue-600"></i>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <button onclick="createReceipt()" class="py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">ใบเสร็จรับเงิน</button>
+                                <button onclick="createTaxInvoice()" class="py-2 bg-blue-700 text-white rounded-lg text-sm font-medium hover:bg-blue-800">ใบกำกับภาษี</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Schedule Management -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                        <h3 class="font-bold text-lg text-slate-800 mb-4">ตารางเรียนทั้งหมดในสาขา</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th class="p-3 text-left">วัน/เวลา</th>
+                                        <th class="p-3 text-left">วิชา</th>
+                                        <th class="p-3 text-left">ครูผู้สอน</th>
+                                        <th class="p-3 text-left">นักเรียน</th>
+                                        <th class="p-3 text-left">ห้อง</th>
+                                        <th class="p-3 text-left">สถานะ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b hover:bg-slate-50">
+                                        <td class="p-3">จันทร์ 10:00-11:30</td>
+                                        <td class="p-3 font-medium">Math Visual L2</td>
+                                        <td class="p-3">ครูสมศรี</td>
+                                        <td class="p-3">12 คน</td>
+                                        <td class="p-3">ห้อง 1</td>
+                                        <td class="p-3"><span class="role-badge bg-green-100 text-green-800">ปกติ</span></td>
+                                    </tr>
+                                    <tr class="border-b hover:bg-slate-50">
+                                        <td class="p-3">อังคาร 13:00-14:30</td>
+                                        <td class="p-3 font-medium">Science Explorer L1</td>
+                                        <td class="p-3">ครูเจน</td>
+                                        <td class="p-3">10 คน</td>
+                                        <td class="p-3">ห้อง 2</td>
+                                        <td class="p-3"><span class="role-badge bg-green-100 text-green-800">ปกติ</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="p-3">พุธ 09:00-10:30</td>
+                                        <td class="p-3 font-medium">Math Visual L3</td>
+                                        <td class="p-3">ครูเอก</td>
+                                        <td class="p-3">8 คน</td>
+                                        <td class="p-3">ห้อง 3</td>
+                                        <td class="p-3"><span class="role-badge bg-yellow-100 text-yellow-800">ชดเชย</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <button onclick="openModal('full-schedule')" class="w-full mt-4 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-200">ดูตารางเรียนทั้งหมด</button>
+                    </div>
+
+                    <!-- After School Program -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mt-6">
+                        <div class="flex flex-col gap-4">
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-800">After School Program</h3>
+                                <p class="text-xs text-slate-600 mt-2">สิทธิ์ของคุณ: <span id="current-permissions" class="font-bold">Teacher</span></p>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="setPermissionView('master')" class="px-4 py-2 rounded-lg text-sm font-medium transition" id="perm-btn-master">
+                                    <i data-lucide="check-circle2" class="w-4 h-4 inline mr-1"></i> Master
+                                </button>
+                                <button onclick="setPermissionView('teacher')" class="px-4 py-2 rounded-lg text-sm font-medium transition" id="perm-btn-teacher">
+                                    <i data-lucide="eye" class="w-4 h-4 inline mr-1"></i> Teacher
+                                </button>
+                                <button onclick="setPermissionView('all')" class="px-4 py-2 rounded-lg text-sm font-medium transition" id="perm-btn-all">
+                                    <i data-lucide="layout" class="w-4 h-4 inline mr-1"></i> ทั้งหมด
+                                </button>
+                            </div>
+                        </div>
+                        <div class="space-y-4 mt-6" id="after-school-content">
+                            <div class="p-4 bg-pink-50 rounded-xl border border-pink-100 cursor-pointer hover:bg-pink-100" onclick="openModal('after-school-partners')">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
+                                            <i data-lucide="school" class="w-5 h-5 text-pink-600"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">โรงเรียนพันธมิตร</p>
+                                            <p class="text-sm text-slate-600">8 โรงเรียน</p>
+                                        </div>
+                                    </div>
+                                    <i data-lucide="chevron-right" class="w-5 h-5 text-pink-400"></i>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-cyan-50 rounded-xl border border-cyan-100 cursor-pointer hover:bg-cyan-100" onclick="openModal('after-school-schedule')">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center">
+                                            <i data-lucide="calendar-days" class="w-5 h-5 text-cyan-600"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">ตารางเรียน & คลาส</p>
+                                            <p class="text-sm text-slate-600">24 คลาส</p>
+                                        </div>
+                                    </div>
+                                    <i data-lucide="chevron-right" class="w-5 h-5 text-cyan-400"></i>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-rose-50 rounded-xl border border-rose-100 cursor-pointer hover:bg-rose-100" onclick="openModal('after-school-curriculum')">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-rose-100 rounded-lg flex items-center justify-center">
+                                            <i data-lucide="book-marked" class="w-5 h-5 text-rose-600"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">เอกสาร & หลักสูตร</p>
+                                            <p class="text-sm text-slate-600">ทำการแก้ไข / ดู / ดาวน์โหลด</p>
+                                        </div>
+                                    </div>
+                                    <i data-lucide="chevron-right" class="w-5 h-5 text-rose-400"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Branch Teacher View -->
+                <div id="branch-teacher-view" class="branch-role-view hide">
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-2xl font-bold text-slate-800">Teacher Dashboard</h2>
+                            <p class="text-slate-600">ครูสมศรี • สาขาพระราม 9</p>
+                        </div>
+                    </div>
+
+                    <!-- Teacher Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6 mb-8">
+                        <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 card-mobile">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">นักเรียนของฉัน</p>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-indigo-900 mt-1">24</h3>
+                                    <p class="text-slate-500 text-xs mt-1">3 ห้องเรียน</p>
+                                </div>
+                                <div class="p-3 bg-indigo-50 rounded-xl text-indigo-600"><i data-lucide="users"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 card-mobile">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">ชั่วโมงสอนเดือนนี้</p>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-green-600 mt-1">28</h3>
+                                    <p class="text-slate-500 text-xs mt-1">จากเป้า 30 ชม</p>
+                                </div>
+                                <div class="p-3 bg-green-50 rounded-xl text-green-500"><i data-lucide="clock"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 card-mobile">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">OT ชั่วโมงเกิน</p>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-orange-600 mt-1" id="teacher-ot-hours">0</h3>
+                                    <p class="text-slate-500 text-xs mt-1">เกิน 7 ชม/สัปดาห์</p>
+                                </div>
+                                <div class="p-3 bg-orange-50 rounded-xl text-orange-500"><i data-lucide="alert-circle"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 card-mobile">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">ส่งรายงานแล้ว</p>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-indigo-900 mt-1">5</h3>
+                                    <p class="text-slate-500 text-xs mt-1">จาก 8 คาบ</p>
+                                </div>
+                                <div class="p-3 bg-blue-50 rounded-xl text-blue-500"><i data-lucide="clipboard-check"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 card-mobile">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 text-sm">VDO Training</p>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-indigo-900 mt-1">3</h3>
+                                    <p class="text-slate-500 text-xs mt-1">ดูแล้ว 2/5</p>
+                                </div>
+                                <div class="p-3 bg-purple-50 rounded-xl text-purple-500"><i data-lucide="video"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Teaching Hours Summary -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-8">
+                        <h3 class="font-bold text-lg text-slate-800 mb-4">รายละเอียดชั่วโมงสอน</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-7 gap-3">
+                            <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-100 text-center">
+                                <p class="text-xs text-slate-600 mb-1">อาจร</p>
+                                <p class="font-bold text-lg text-indigo-900">6</p>
+                                <p class="text-xs text-slate-500">ชม</p>
+                            </div>
+                            <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-100 text-center">
+                                <p class="text-xs text-slate-600 mb-1">จ.ศ.</p>
+                                <p class="font-bold text-lg text-indigo-900">8</p>
+                                <p class="text-xs text-slate-500">ชม</p>
+                            </div>
+                            <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-100 text-center">
+                                <p class="text-xs text-slate-600 mb-1">พ.ศ.</p>
+                                <p class="font-bold text-lg text-indigo-900">7</p>
+                                <p class="text-xs text-slate-500">ชม</p>
+                            </div>
+                            <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-100 text-center">
+                                <p class="text-xs text-slate-600 mb-1">พฤ.ศ.</p>
+                                <p class="font-bold text-lg text-indigo-900">5</p>
+                                <p class="text-xs text-slate-500">ชม</p>
+                            </div>
+                            <div class="p-3 bg-orange-50 rounded-xl border border-orange-100 text-center">
+                                <p class="text-xs text-slate-600 mb-1">ศ.ศ.</p>
+                                <p class="font-bold text-lg text-orange-600">8</p>
+                                <p class="text-xs text-slate-500">ชม <span class="text-orange-600 font-bold">+1 OT</span></p>
+                            </div>
+                            <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-100 text-center">
+                                <p class="text-xs text-slate-600 mb-1">ส.ศ.</p>
+                                <p class="font-bold text-lg text-indigo-900">4</p>
+                                <p class="text-xs text-slate-500">ชม</p>
+                            </div>
+                            <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-100 text-center">
+                                <p class="text-xs text-slate-600 mb-1">ส.ส.</p>
+                                <p class="font-bold text-lg text-indigo-900">0</p>
+                                <p class="text-xs text-slate-500">ชม</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-slate-700"><span class="font-bold">รวม</span> 38 ชม/สัปดาห์</p>
+                                    <p class="text-xs text-slate-600 mt-1">OT รวม: 1 ชม | ค่า OT: ฿150/ชม</p>
+                                </div>
+                                <button onclick="openModal('teaching-hours')" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">รายงานที่ละเอียด</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Teaching Management -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                            <h3 class="font-bold text-lg text-slate-800 mb-4">ตารางสอนของฉัน</h3>
+                            <div class="space-y-3">
+                                <div class="p-3 bg-blue-50 rounded-xl border border-blue-100">
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <p class="font-medium">Math Visual L2</p>
+                                            <p class="text-sm text-slate-600">24 เมษายน • 10:00-11:30</p>
+                                            <p class="text-xs text-slate-500">นักเรียน 12 คน • ห้อง 1</p>
+                                        </div>
+                                        <button onclick="prepareLesson()" class="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">เตรียมการสอน</button>
+                                    </div>
+                                </div>
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <p class="font-medium">Math Visual L2</p>
+                                            <p class="text-sm text-slate-600">26 เมษายน • 10:00-11:30</p>
+                                            <p class="text-xs text-slate-500">นักเรียน 12 คน • ห้อง 1</p>
+                                        </div>
+                                        <button onclick="prepareLesson()" class="px-3 py-1 bg-slate-200 text-slate-700 rounded text-xs">เตรียมการสอน</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="openModal('teacher-schedule')" class="w-full mt-4 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-200">ดูตารางสอนทั้งหมด</button>
+                        </div>
+
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                            <h3 class="font-bold text-lg text-slate-800 mb-4">นักเรียนของฉัน</h3>
+                            <div class="space-y-3">
+                                <div class="p-3 bg-green-50 rounded-xl border border-green-100">
+                                    <div class="flex justify-between items-center">
+                                        <div class="flex items-center gap-3">
+                                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Student1" class="w-8 h-8 rounded-full">
+                                            <div>
+                                                <p class="font-medium">น้องแมท</p>
+                                                <p class="text-xs text-slate-600">Math Visual L2 • 8 คาบเหลือ</p>
+                                            </div>
+                                        </div>
+                                        <button onclick="viewStudentDetails('ST-888')" class="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700">ดูรายละเอียด</button>
+                                    </div>
+                                </div>
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                    <div class="flex justify-between items-center">
+                                        <div class="flex items-center gap-3">
+                                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Student2" class="w-8 h-8 rounded-full">
+                                            <div>
+                                                <p class="font-medium">น้องภูมิ</p>
+                                                <p class="text-xs text-slate-600">Math Visual L2 • 4 คาบเหลือ</p>
+                                            </div>
+                                        </div>
+                                        <button onclick="viewStudentDetails('ST-889')" class="px-3 py-1 bg-slate-200 text-slate-700 rounded text-xs">ดูรายละเอียด</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="openModal('my-students')" class="w-full mt-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">นักเรียนทั้งหมด</button>
+                        </div>
+                    </div>
+
+                    <!-- Teacher Tools -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <button onclick="toggleDailyReport()" class="p-4 bg-white rounded-2xl shadow-sm border border-slate-100 text-center hover:bg-slate-50 transition">
+                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                <i data-lucide="clipboard-list" class="w-6 h-6 text-blue-600"></i>
+                            </div>
+                            <p class="font-medium text-slate-800">บันทึกการสอน</p>
+                        </button>
+                        <button onclick="openModal('teacher-leave')" class="p-4 bg-white rounded-2xl shadow-sm border border-slate-100 text-center hover:bg-slate-50 transition">
+                            <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                <i data-lucide="calendar-x" class="w-6 h-6 text-orange-600"></i>
+                            </div>
+                            <p class="font-medium text-slate-800">แจ้งลา/สลับคาบ</p>
+                        </button>
+                        <button onclick="openModal('teacher-documents')" class="p-4 bg-white rounded-2xl shadow-sm border border-slate-100 text-center hover:bg-slate-50 transition">
+                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                <i data-lucide="book-open" class="w-6 h-6 text-purple-600"></i>
+                            </div>
+                            <p class="font-medium text-slate-800">เอกสารหลักสูตร</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- VDO Training Teacher View -->
+                <div id="branch-teacher-training-view" class="branch-role-view hide">
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-2xl font-bold text-slate-800">VDO Training</h2>
+                            <!-- VDO Type Toggle -->
+                            <div class="flex items-center gap-2 bg-slate-100 rounded-xl p-1">
+                                <button onclick="switchVdoType('math')" class="px-4 py-2 rounded-lg text-sm font-medium transition" id="vdo-type-math">
+                                    <i data-lucide="calculator" class="w-4 h-4 inline mr-1"></i> คณิต
+                                </button>
+                                <button onclick="switchVdoType('science')" class="px-4 py-2 rounded-lg text-sm font-medium transition" id="vdo-type-science">
+                                    <i data-lucide="microscope" class="w-4 h-4 inline mr-1"></i> วิทย์
+                                </button>
+                                <button onclick="switchVdoType('general')" class="px-4 py-2 rounded-lg text-sm font-medium transition" id="vdo-type-general">
+                                    <i data-lucide="book" class="w-4 h-4 inline mr-1"></i> ทั่วไป
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Topics List (Left side - Narrow) -->
+                        <div class="lg:col-span-1">
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 sticky top-20 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
+                                <h3 class="font-bold text-sm text-slate-800 mb-3">หัวข้อการเรียน</h3>
+                                <!-- Topics will be generated here -->
+                                <div class="space-y-2" id="vdo-topics-list">
+                                    <!-- Topics will be generated dynamically -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Video Player & Subtopics (Right side - Wide) -->
+                        <div class="lg:col-span-2">
+                            <div class="grid grid-cols-1 gap-6">
+                                <!-- Video Player Section -->
+                                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                                    <div class="mb-4">
+                                        <h3 class="font-bold text-lg text-slate-800 mb-2" id="vdo-title">เลือกวิดีโอ</h3>
+                                        <p class="text-sm text-slate-600" id="vdo-description">เลือกหัวข้อจากด้านซ้าย</p>
+                                    </div>
+                                    <div id="video-player" class="bg-slate-900 rounded-xl overflow-hidden mb-4" style="aspect-ratio: 16/9; width: 100%;">
+                                        <div class="w-full h-full flex items-center justify-center text-slate-400">
+                                            <i data-lucide="play-circle" class="w-12 h-12"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col gap-3">
+                                        <button onclick="startVdoLesson()" class="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700">
+                                            <i data-lucide="play" class="w-4 h-4 inline mr-2"></i> เล่น
+                                        </button>
+                                        <button onclick="markAsWatched()" class="w-full py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700" id="mark-watched-btn" style="display:none;">
+                                            <i data-lucide="check" class="w-4 h-4 inline mr-2"></i> ตั้งเป็นดูแล้ว
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Subtopics Grid -->
+                                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                                    <h3 class="font-bold text-lg text-slate-800 mb-4">หัวข้อย่อย</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="vdo-subtopics-grid">
+                                        <!-- Subtopics will be generated here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== PARENT VIEW ==================== -->
+            <div id="view-parent" class="role-view hide fade-in">
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <!-- Student Profile with Virtual Card -->
+                    <div class="student-card-horizontal">
+                        <div class="student-card-left">
+                            <div class="flex items-center gap-6 mb-6">
+                                <div class="relative">
+                                    <img src="https://png.pngtree.com/png-clipart/20250123/original/pngtree-a-cheerful-young-student-with-long-png-image_20325474.png" class="w-24 h-24 rounded-2xl object-cover border-4 border-white shadow-lg">
+                                    <div class="absolute -bottom-2 -right-2 w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center border-2 border-white">
+                                        <i data-lucide="star" class="w-5 h-5 text-white"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <h2 class="text-3xl font-bold text-white">น้องแมท</h2>
+                                    <p class="text-white/90 text-lg">ด.ช. รักเรียน • อายุ 8 ปี</p>
+                                    <div class="flex items-center gap-4 mt-3">
+                                        <div class="px-3 py-1 bg-white/20 rounded-full text-sm">
+                                            <i data-lucide="book-open" class="w-4 h-4 inline mr-1"></i>
+                                            Math Visual Level 2
+                                        </div>
+                                        <div class="px-3 py-1 bg-white/20 rounded-full text-sm">
+                                            <i data-lucide="user" class="w-4 h-4 inline mr-1"></i>
+                                            ครูสมศรี
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4 mb-6">
+                                <div class="p-3 bg-white/10 rounded-xl backdrop-blur-sm">
+                                    <p class="text-white/80 text-sm">ชั่วโมงเรียนคงเหลือ</p>
+                                    <p class="text-2xl font-bold text-white">8 <span class="text-lg">คาบ</span></p>
+                                </div>
+                                <div class="p-3 bg-white/10 rounded-xl backdrop-blur-sm">
+                                    <p class="text-white/80 text-sm">เรียนมาแล้ว</p>
+                                    <p class="text-2xl font-bold text-white">16 <span class="text-lg">คาบ</span></p>
+                                </div>
+                                <div class="p-3 bg-white/10 rounded-xl backdrop-blur-sm">
+                                    <p class="text-white/80 text-sm">พัฒนาการล่าสุด</p>
+                                    <p class="text-2xl font-bold text-green-300">+15%</p>
+                                </div>
+                                <div class="p-3 bg-white/10 rounded-xl backdrop-blur-sm">
+                                    <p class="text-white/80 text-sm">คะแนน Feedback</p>
+                                    <p class="text-2xl font-bold text-yellow-300">4.8/5.0</p>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <p class="text-white/80 text-sm mb-2">สาขา: พระราม 9 • บัตรมีผลถึง: 31/12/2026</p>
+                                <button onclick="showVirtualCardFullscreen()" class="px-4 py-2 bg-white text-indigo-600 rounded-lg font-bold hover:bg-slate-100">
+                                    <i data-lucide="smartphone" class="w-4 h-4 inline mr-2"></i> เปิดบัตรนักเรียนเต็มหน้าจอ
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="student-card-right">
+                            <div class="text-center mb-4">
+                                <p class="text-white font-bold mb-2">QR Code สำหรับสแกน</p>
+                                <p class="text-white/80 text-sm">แสดง QR Code นี้ที่สาขาเพื่อตัดชั่วโมงเรียนอัตโนมัติ</p>
+                            </div>
+                            <div class="qr-code-container">
+                                <div id="student-qr-code" class="qr-code mb-3">
+                                    <!-- QR Code will be generated here -->
+                                </div>
+                                <p class="text-sm font-medium text-slate-800">ST-888 • MATH-VISUAL-2</p>
+                                <p class="text-xs text-slate-600 mt-1">สแกนเพื่อ Check-in และตัดชั่วโมงเรียน</p>
+                            </div>
+                            <div class="mt-4 text-center">
+                                <button onclick="simulateScanFromParent()" class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700">
+                                    <i data-lucide="camera" class="w-4 h-4 inline mr-2"></i> ทดลองสแกน QR Code
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Parent Quick Actions -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <button onclick="openModal('absent-notice')" class="p-4 bg-white rounded-2xl shadow-sm border border-slate-100 text-center hover:bg-slate-50 transition">
+                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                <i data-lucide="calendar-x" class="w-6 h-6 text-blue-600"></i>
+                            </div>
+                            <p class="font-medium text-slate-800">แจ้งลา</p>
+                        </button>
+                        <button onclick="openModal('makeup-class')" class="p-4 bg-white rounded-2xl shadow-sm border border-slate-100 text-center hover:bg-slate-50 transition">
+                            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                <i data-lucide="refresh-cw" class="w-6 h-6 text-green-600"></i>
+                            </div>
+                            <p class="font-medium text-slate-800">เรียนชดเชย</p>
+                        </button>
+                        <button onclick="openModal('payment-parent')" class="p-4 bg-white rounded-2xl shadow-sm border border-slate-100 text-center hover:bg-slate-50 transition">
+                            <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                <i data-lucide="credit-card" class="w-6 h-6 text-orange-600"></i>
+                            </div>
+                            <p class="font-medium text-slate-800">ชำระเงิน</p>
+                        </button>
+                        <button onclick="openModal('schedule-parent')" class="p-4 bg-white rounded-2xl shadow-sm border border-slate-100 text-center hover:bg-slate-50 transition">
+                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                <i data-lucide="calendar" class="w-6 h-6 text-purple-600"></i>
+                            </div>
+                            <p class="font-medium text-slate-800">ตารางเรียน</p>
+                        </button>
+                    </div>
+
+                    <!-- Enhanced Parent View -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Schedule -->
+                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="font-bold text-lg text-slate-800">ตารางเรียน 2 สัปดาห์</h3>
+                                <button onclick="openModal('full-schedule-parent')" class="text-sm text-indigo-600 hover:text-indigo-800">ดูทั้งหมด</button>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="p-3 bg-blue-50 rounded-xl border border-blue-100">
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <p class="font-bold text-slate-800">Math Level 2</p>
+                                            <p class="text-slate-600 text-sm">24 เมษายน • 10:00-11:30</p>
+                                            <p class="text-slate-500 text-xs">ครูสมศรี • ห้อง 1</p>
+                                        </div>
+                                        <span class="role-badge bg-blue-100 text-blue-800">คาบถัดไป</span>
+                                    </div>
+                                </div>
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <p class="font-bold text-slate-800">Math Level 2</p>
+                                            <p class="text-slate-600 text-sm">26 เมษายน • 10:00-11:30</p>
+                                            <p class="text-slate-500 text-xs">ครูสมศรี • ห้อง 1</p>
+                                        </div>
+                                        <span class="role-badge bg-slate-100 text-slate-800">ปกติ</span>
+                                    </div>
+                                </div>
+                                <div class="p-3 bg-green-50 rounded-xl border border-green-100">
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <p class="font-bold text-slate-800">เรียนชดเชย</p>
+                                            <p class="text-slate-600 text-sm">28 เมษายน • 13:00-14:30</p>
+                                            <p class="text-slate-500 text-xs">ครูสมศรี • ห้อง 2</p>
+                                        </div>
+                                        <span class="role-badge bg-green-100 text-green-800">ชดเชย</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="openModal('makeup-class')" class="w-full mt-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">
+                                <i data-lucide="refresh-cw" class="w-4 h-4 inline mr-2"></i> ขอเรียนชดเชย
+                            </button>
+                        </div>
+
+                        <!-- Payment -->
+                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="font-bold text-lg text-slate-800">การชำระเงิน</h3>
+                                <button onclick="openModal('payment-history')" class="text-sm text-indigo-600 hover:text-indigo-800">ประวัติการชำระ</button>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="p-4 bg-green-50 rounded-xl border border-green-100">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <div>
+                                            <p class="font-medium">ชำระล่าสุด</p>
+                                            <p class="text-sm text-slate-600">12 คาบ • ฿6,000</p>
+                                        </div>
+                                        <i data-lucide="check-circle" class="w-6 h-6 text-green-600"></i>
+                                    </div>
+                                    <p class="text-xs text-slate-500">วันที่ชำระ: 15/04/2026</p>
+                                </div>
+                                <div class="p-4 bg-orange-50 rounded-xl border border-orange-100">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <div>
+                                            <p class="font-medium">รอบชำระถัดไป</p>
+                                            <p class="text-sm text-slate-600">8 คาบ • ฿4,000</p>
+                                        </div>
+                                        <i data-lucide="calendar" class="w-6 h-6 text-orange-600"></i>
+                                    </div>
+                                    <p class="text-xs text-slate-500">กำหนดชำระ: 30/04/2026</p>
+                                    <button onclick="openModal('payment-parent')" class="w-full mt-3 py-2 bg-orange-600 text-white rounded-lg text-sm font-medium hover:bg-orange-700">ชำระเงิน</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress and Reports -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Progress Visualization -->
+                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="font-bold text-lg text-slate-800">พัฒนาการของลูกน้อย</h3>
+                                <select class="text-sm border rounded-lg px-3 py-1">
+                                    <option>เดือนนี้</option>
+                                    <option>3 เดือน</option>
+                                    <option>6 เดือน</option>
+                                </select>
+                            </div>
+                            <div class="h-40 flex items-end justify-between gap-2 px-4">
+                                <div class="w-full bg-indigo-100 rounded-t-lg h-12 flex flex-col items-center justify-end">
+                                    <div class="w-full bg-indigo-300 rounded-t-lg h-8"></div>
+                                    <p class="text-xs mt-1">ม.ค.</p>
+                                </div>
+                                <div class="w-full bg-indigo-200 rounded-t-lg h-20 flex flex-col items-center justify-end">
+                                    <div class="w-full bg-indigo-400 rounded-t-lg h-16"></div>
+                                    <p class="text-xs mt-1">ก.พ.</p>
+                                </div>
+                                <div class="w-full bg-indigo-300 rounded-t-lg h-24 flex flex-col items-center justify-end">
+                                    <div class="w-full bg-indigo-500 rounded-t-lg h-20"></div>
+                                    <p class="text-xs mt-1">มี.ค.</p>
+                                </div>
+                                <div class="w-full bg-green-500 rounded-t-lg h-28 shadow-lg shadow-green-100 flex flex-col items-center justify-end">
+                                    <div class="w-full bg-green-600 rounded-t-lg h-24"></div>
+                                    <p class="text-xs mt-1 text-white">เม.ย.</p>
+                                </div>
+                            </div>
+                            <p class="text-center text-slate-600 text-sm mt-4">พัฒนาด้านการคิดวิเคราะห์เพิ่มขึ้น 15% จากเดือนที่แล้ว</p>
+                        </div>
+
+                        <!-- Latest Reports -->
+                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                            <h3 class="font-bold text-lg text-slate-800 mb-6">รายงานการสอนล่าสุด</h3>
+                            <div class="space-y-4">
+                                <div class="p-4 bg-green-50 rounded-xl border border-green-100 cursor-pointer hover:bg-green-100" onclick="openModal('lesson-report')">
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                                            <i data-lucide="clipboard-check" class="w-5 h-5 text-green-600"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="font-medium">Math Level 2 (10:00-11:30)</p>
+                                            <p class="text-slate-600 text-sm mt-1">ครูสมศรี • วันนี้</p>
+                                            <p class="text-slate-500 text-xs mt-2 line-clamp-2">น้องแมทมีสมาธิดีมากในการเรียนวันนี้ สามารถแก้โจทย์ปัญหาที่ซับซ้อนได้ด้วยตัวเอง...</p>
+                                        </div>
+                                        <span class="notification-badge bg-green-500">ใหม่</span>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 cursor-pointer hover:bg-slate-100" onclick="openModal('lesson-report')">
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
+                                            <i data-lucide="clipboard" class="w-5 h-5 text-slate-600"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">Math Level 2 (10:00-11:30)</p>
+                                            <p class="text-slate-600 text-sm mt-1">ครูสมศรี • 3 วันก่อน</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="openModal('all-reports')" class="w-full mt-4 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-200">ดูรายงานทั้งหมด</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ==================== MODALS ==================== -->
+    <!-- Compact QR Check-in Modal -->
+    <div id="qr-checkin-modal" class="fixed inset-0 bg-black/50 z-[100] hide flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl p-6 modal-slide-up compact-modal">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="qr-code" class="w-8 h-8 text-indigo-600"></i>
+                </div>
+                <h3 class="font-bold text-xl">QR Code เข้างาน</h3>
+                <p class="text-slate-600 mt-2">แสดง QR Code นี้ให้แอดมินสาขาสแกน</p>
+            </div>
+            
+            <div class="qr-code-container p-4 mb-6">
+                <div id="staff-checkin-qr" class="qr-code mb-4" style="width: 150px; height: 150px; margin: 0 auto;">
+                    <!-- Staff QR Code will be generated here -->
+                </div>
+                <p class="font-bold text-slate-800 text-center">ครูสมศรี • BR-T-009</p>
+                <p class="text-sm text-slate-600 text-center">สาขาพระราม 9</p>
+            </div>
+            
+            <div class="space-y-3 mb-6">
+                <div class="p-3 bg-green-50 rounded-lg border border-green-100">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="clock" class="w-4 h-4 text-green-600"></i>
+                        <div>
+                            <p class="font-medium text-sm">เวลาปัจจุบัน</p>
+                            <p class="text-xs text-slate-600" id="current-time">กำลังโหลด...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6">
+                <button onclick="closeModal()" class="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700">ปิด</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compact Virtual Student Card Fullscreen -->
+    <div id="virtual-card-fullscreen" class="fixed inset-0 bg-gradient-to-br from-indigo-600 to-purple-700 z-[999] hide flex items-center justify-center p-4">
+        <div class="w-full max-w-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-white">บัตรนักเรียนดิจิทัล</h2>
+                <button onclick="closeVirtualCardFullscreen()" class="p-2 bg-white/20 rounded-lg hover:bg-white/30">
+                    <i data-lucide="x" class="w-5 h-5 text-white"></i>
+                </button>
+            </div>
+            
+            <div class="student-card-horizontal modal-slide-up">
+                <div class="student-card-left">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="relative">
+                            <img src="https://png.pngtree.com/png-clipart/20250123/original/pngtree-a-cheerful-young-student-with-long-png-image_20325474.png" class="w-16 h-16 rounded-xl object-cover border-4 border-white">
+                            <div class="absolute -bottom-1 -right-1 w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center border-2 border-white">
+                                <i data-lucide="star" class="w-4 h-4 text-white"></i>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <h2 class="text-xl font-bold text-white mb-1">น้องแมท</h2>
+                            <p class="text-white/90 text-sm">Math Visual Level 2</p>
+                            <p class="text-white/80 text-xs">สาขาพระราม 9</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div class="p-2 bg-white/10 rounded-lg">
+                            <p class="text-white/80 text-xs">รหัสนักเรียน</p>
+                            <p class="text-sm font-bold text-white">ST-888</p>
+                        </div>
+                        <div class="p-2 bg-white/10 rounded-lg">
+                            <p class="text-white/80 text-xs">ครูผู้สอน</p>
+                            <p class="text-sm font-bold text-white">ครูสมศรี</p>
+                        </div>
+                        <div class="p-2 bg-white/10 rounded-lg">
+                            <p class="text-white/80 text-xs">ชั่วโมงเหลือ</p>
+                            <p class="text-sm font-bold text-green-300">8 คาบ</p>
+                        </div>
+                        <div class="p-2 bg-white/10 rounded-lg">
+                            <p class="text-white/80 text-xs">มีผลถึง</p>
+                            <p class="text-sm font-bold text-yellow-300">31/12/2026</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="student-card-right">
+                    <div class="text-center mb-3">
+                        <p class="text-white font-bold text-sm mb-1">QR Code สำหรับสแกน</p>
+                        <p class="text-white/80 text-xs">แสดง QR Code นี้ที่สาขา</p>
+                    </div>
+                    <div class="qr-code-container p-3 mb-3">
+                        <div id="fullscreen-qr-code" class="qr-code mb-2" style="width: 120px; height: 120px; margin: 0 auto;">
+                            <!-- QR Code will be generated here -->
+                        </div>
+                        <p class="text-sm font-bold text-slate-800 text-center">ST-888</p>
+                        <p class="text-xs text-slate-600 text-center">สแกนเพื่อ Check-in</p>
+                    </div>
+                    <div class="text-center">
+                        <button onclick="simulateScanFromCard()" class="px-3 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700">
+                            <i data-lucide="camera" class="w-4 h-4 inline mr-1"></i> ทดลองสแกน
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <button onclick="closeVirtualCardFullscreen()" class="px-4 py-2 bg-white/20 text-white rounded-lg text-sm font-medium hover:bg-white/30">
+                    <i data-lucide="smartphone" class="w-4 h-4 inline mr-1"></i> ปิดบัตรนักเรียน
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daily Report Modal -->
+    <div id="report-modal" class="fixed inset-0 bg-black/50 z-[100] hide flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl p-6 modal-slide-up">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-bold text-xl">รายงานการสอน</h3>
+                <button onclick="toggleDailyReport()" class="p-2 hover:bg-slate-100 rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-sm font-bold text-slate-600 ml-1">หัวข้อบทเรียน</label>
+                    <input type="text" class="w-full p-3 border rounded-xl mt-1" placeholder="เช่น: การบวกเลขสองหลัก">
+                </div>
+                <div>
+                    <label class="text-sm font-bold text-slate-600 ml-1">ระดับความเข้าใจ</label>
+                    <div class="flex gap-2 mt-2">
+                        <button class="px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm" onclick="selectUnderstandingLevel('ต้องการช่วยเหลือ')">ต้องการช่วยเหลือ</button>
+                        <button class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg text-sm" onclick="selectUnderstandingLevel('ปานกลาง')">ปานกลาง</button>
+                        <button class="px-4 py-2 bg-green-100 text-green-700 rounded-lg text-sm" onclick="selectUnderstandingLevel('เข้าใจดีมาก')">เข้าใจดีมาก</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-sm font-bold text-slate-600 ml-1">บันทึกการเรียน</label>
+                    <textarea class="w-full border p-3 rounded-xl mt-1 h-32" placeholder="เขียนบันทึกการเรียนของน้อง..."></textarea>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="toggleDailyReport()" class="flex-1 py-3 bg-slate-100 text-slate-700 rounded-xl font-bold hover:bg-slate-200">บันทึกเป็นฉบับร่าง</button>
+                <button onclick="submitDailyReport()" class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700">บันทึกและแจ้งเตือน</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Generic Modal Template -->
+    <div id="generic-modal" class="fixed inset-0 bg-black/50 z-[100] hide flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl w-full max-w-2xl shadow-2xl p-6 modal-slide-up">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-bold text-xl" id="modal-title">Modal Title</h3>
+                <button onclick="closeModal()" class="p-2 hover:bg-slate-100 rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div id="modal-content">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== LOGIN OVERLAY ==================== -->
+    <div id="login-overlay" class="fixed inset-0 bg-slate-100 z-[999] flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl w-full max-w-md p-10 shadow-2xl text-center space-y-8 relative border border-slate-200 slide-up my-auto">
+            
+            <!-- ROLE SWITCHER (Small Top Right) -->
+            <div class="absolute top-4 right-4">
+                <select id="login-role-select" onchange="updateLoginUI(this.value)" class="text-[10px] bg-indigo-50 border border-indigo-100 rounded-md px-2 py-1 text-indigo-600 font-bold focus:outline-none cursor-pointer hover:bg-indigo-100 transition">
+                    <option value="hq-super-admin">Login as: HQ Super Admin</option>
+                    <option value="hq-master-teacher">Login as: HQ Master Teacher</option>
+                    <option value="hq-hr">Login as: HQ HR</option>
+                    <option value="hq-accounting">Login as: HQ Accounting</option>
+                    <option value="branch-executive">Login as: Branch Executive</option>
+                    <option value="branch-admin">Login as: Branch Admin</option>
+                    <option value="branch-teacher">Login as: Branch Teacher</option>
+                    <option value="parent">Login as: Parent/Customer</option>
+                </select>
+            </div>
+
+            <div class="w-20 h-20 bg-orange-400 rounded-2xl flex items-center justify-center text-4xl font-bold shadow-xl mx-auto text-white">M</div>
+            
+            <div>
+                <h1 id="login-title" class="text-2xl font-bold text-indigo-900">Math Talent System</h1>
+                <p id="login-subtitle" class="text-slate-500 text-sm mt-1">ระบบบริหารจัดการศูนย์คณิตศาสตร์และวิทยาศาสตร์</p>
+            </div>
+            
+            <div class="space-y-4 text-left">
+                <div>
+                    <label id="label-id" class="text-sm font-bold text-slate-600 ml-1">Staff ID / Student ID</label>
+                    <div class="relative mt-1">
+                        <i data-lucide="user" class="absolute left-4 top-3.5 w-5 h-5 text-slate-300"></i>
+                        <input type="text" class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" placeholder="เลขประจำตัว" value="DEMO-001" readonly>
+                    </div>
+                </div>
+                <div>
+                    <label id="label-pass" class="text-sm font-bold text-slate-600 ml-1">Password</label>
+                    <div class="relative mt-1">
+                        <i data-lucide="lock" class="absolute left-4 top-3.5 w-5 h-5 text-slate-300"></i>
+                        <input type="password" class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" placeholder="รหัสผ่าน" value="••••••••" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Demo Note -->
+            <div class="p-4 bg-yellow-50 rounded-xl border border-yellow-100">
+                <p class="text-sm text-yellow-800 font-medium">⚠️ INTERACTIVE DEMO MODE</p>
+                <p class="text-xs text-yellow-700 mt-1">กด Login ได้เลย ทุกปุ่มทำงานได้และโต้ตอบได้จริง!</p>
+            </div>
+
+            <button onclick="handleLogin()" class="w-full bg-indigo-600 text-white font-bold py-4 rounded-2xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 transform active:scale-95">
+                เข้าสู่ระบบ
+            </button>
+            
+            <p class="text-xs text-slate-400">Math Talent by Dr.Ying © 2026 • Interactive Mockup V6</p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
